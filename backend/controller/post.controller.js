@@ -1,9 +1,7 @@
 import { Post } from "../model/post.model";
 import { User } from "../model/user.model";
 import sharp from "sharp";
-import getDataUri from "../utils/datauri";
 import cloudinary from "../utils/cloudinary";
-import { populate } from "dotenv";
 import { Reaction } from "../model/reaction.model";
 
 const addNewPost = async (req, res) => {
@@ -168,4 +166,65 @@ export const postReaction = async (req, res) => {
             });
         }
     };
-    
+
+export const addComment = async(req,res)=>{
+    try {
+        const userId = req.id;
+        const postId = req.params.id;
+        const post = await Post.findById(postId);
+        const {text} = req.body;
+
+        if(!text){
+            return res.status(403).json({
+                message:'no text in comment send some'
+            })
+        }
+        const comment = await Comment.create({
+               author:userId,
+               text:text,
+               post:postId
+        })
+        comment.populate({
+            path:'author',
+            select:'username profilePicture'
+        })
+
+     await post.comment.push(comment._id);
+     await post.save();
+
+      return res.status(200).json({
+        message:'Comment is created successfully',
+        success:true,
+        comment
+      })
+
+    } catch (error) {
+        console.log(error)
+    }
+}    
+
+export const getCommentOfPost = async(req,res)=>{
+    try {
+        const postId = req.params.id;
+        const comments = await Comment.find({post:postId})
+       .populate({
+            path:'author',
+            select:'username profilePicture'
+        })
+
+        if(comments.length === 0){
+            return res.status(404).json({
+            message:"no message found",
+            success:false
+            })
+        }
+
+        return res.status(200).json({
+            message:'comments found',
+            success:true,
+            comments
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
