@@ -228,3 +228,5 @@ export const getCommentOfPost = async(req,res)=>{
         console.log(error)
     }
 }
+
+//.
