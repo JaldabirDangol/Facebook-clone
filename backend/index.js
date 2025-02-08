@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 import connectDB from './utils/db.js'
 import userRoutes from './routes/user.routes.js'
+import postRoutes from './routes/post.route.js'
 
 dotenv.config()
 const app = express();
@@ -19,6 +20,7 @@ app.use(urlencoded({ extended: true }));
 // };
 
 app.use('/api/v1/user/',userRoutes);
+app.use('/api/v1/post',postRoutes);
 
 app.get('/',(req,res)=>{
     res.send("hello i am working")

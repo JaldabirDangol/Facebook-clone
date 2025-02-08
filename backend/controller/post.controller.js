@@ -1,15 +1,23 @@
-import { Post } from "../model/post.model";
-import { User } from "../model/user.model";
+import { Post } from "../model/post.model.js";
+import { User } from "../model/user.model.js";
 import sharp from "sharp";
-import cloudinary from "../utils/cloudinary";
-import { Reaction } from "../model/reaction.model";
+import cloudinary from "../utils/cloudinary.js";
+import { Reaction } from "../model/reaction.model.js";
+import {Comment} from '../model/comment.model.js'
 
-const addNewPost = async (req, res) => {
+export const addNewPost = async (req, res) => {
   try {
     const userId = req.id;
-    const caption = req.body;
+    const {caption} = req.body;
     const photo = req.file;
     const user = await User.findById(userId);
+
+    if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+          success: false,
+        });
+      }
 
     if(!caption && !photo){
         return res.status(404).json({
@@ -17,8 +25,8 @@ const addNewPost = async (req, res) => {
             success:false
         })
     }
-
-    const optimizedBuffer = await sharp(photo)
+   
+    const optimizedBuffer = await sharp(photo.buffer)
       .resize(800)
       .jpeg({ quality: 80 })
       .toBuffer();
@@ -29,7 +37,7 @@ const addNewPost = async (req, res) => {
 
     const post = await Post.create({
       caption,
-      photo: cloudResponse.secure_url,
+      image: cloudResponse.secure_url,
       author: userId,
     });
 
@@ -55,15 +63,20 @@ const addNewPost = async (req, res) => {
 
 export const getAllPost = async (req,res)=>{
     try {
-        const post = await Post.find();
-
-        if(post){
-           await post.populate([{
+        const post = await Post.find().sort({createdAt:-1})
+        .populate([{
                 path:'author',
                 select:'username profilePicture'
             },
             {
-                path:'comment reaction',
+                path:'comment',
+                populate:{
+                    path:'author',
+                    select:'username profilePicture'
+                }
+            },
+            {
+                path:'reaction',
                 populate:{
                     path:'author',
                     select:'username profilePicture'
@@ -71,7 +84,7 @@ export const getAllPost = async (req,res)=>{
             },
            
         ])
-        }
+        
         return res.status(200).json({
             message:'Watch feed',
             success:true,
@@ -88,7 +101,6 @@ export const postReaction = async (req, res) => {
             const postId = req.params.id;
             const { Rtype } = req.body;
     
-            // Validate reaction type
             const validReactions = ["like", "love", "haha", "care", "sad", "angry"];
             if (!validReactions.includes(Rtype)) {
                 return res.status(400).json({
@@ -104,13 +116,10 @@ export const postReaction = async (req, res) => {
                     success: false
                 });
             }
-    
-            // Check if user already reacted to the post
             const existingReaction = await Reaction.findOne({ author: userId, post: postId });
     
             if (existingReaction) {
                 if (existingReaction.type === Rtype) {
-                    // If the same reaction type exists, remove the reaction (toggle off)
                     await existingReaction.deleteOne();
                     await Post.updateOne(
                         { _id: postId },
@@ -122,7 +131,6 @@ export const postReaction = async (req, res) => {
                         success: true
                     });
                 } else {
-                    // Update existing reaction type
                     existingReaction.type = Rtype;
                     await existingReaction.save();
     
@@ -132,8 +140,6 @@ export const postReaction = async (req, res) => {
                     });
                 }
             }
-    
-            // If no existing reaction, create a new one
             const reaction = new Reaction({
                 type: Rtype,
                 author: userId,
@@ -141,8 +147,6 @@ export const postReaction = async (req, res) => {
             });
     
             await reaction.save();
-    
-            // Add the reaction to the post
             await Post.updateOne(
                 { _id: postId },
                 { $addToSet: { reaction: reaction._id } }
@@ -179,17 +183,23 @@ export const addComment = async(req,res)=>{
                 message:'no text in comment send some'
             })
         }
+        if (!post) {
+            return res.status(404).json({
+              message: "Post not found",
+              success: false,
+            });
+          }
         const comment = await Comment.create({
                author:userId,
                text:text,
                post:postId
         })
-        comment.populate({
+       await comment.populate({
             path:'author',
             select:'username profilePicture'
         })
 
-     await post.comment.push(comment._id);
+     post.comment.push(comment._id);
      await post.save();
 
       return res.status(200).json({
@@ -229,4 +239,106 @@ export const getCommentOfPost = async(req,res)=>{
     }
 }
 
-//.
+export const deletePost = async(req,res)=>{
+    try {
+        const userId = req.id;
+        const postId = req.params.id;
+        const post = await Post.findById(postId);
+        const user = await User.findById(userId);
+
+        if(!post){
+            return res.status(401).json({
+                message:'post does not exists',
+                success:false
+            })
+        }
+        
+        if(userId !== post.author.toString()){
+            return res.status(403).json({
+                message:'you are not the author of post ',
+                success:false
+            })
+        }
+        
+        await Promise.all([
+        post.findByIdAndDelete(postId),
+        Comment.deleteMany( {post:postId}),
+        Reaction.deleteMany({post:postId}),
+       ])
+      
+       user.posts = user.posts.filter(post => post !== postId);
+       await user.save()
+    
+       return res.status(201).json({
+        message:'post has been deleted !!!',
+        success:true,
+       })
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const savedPost = async (req, res) => {
+    try {
+        const userId = req.id; 
+        const postId = req.params.id;
+
+        // Find user and post
+        const user = await User.findById(userId);
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({
+                message: 'Post not found',
+                success: false
+            });
+        }
+
+        let updatedUser;
+
+        if (user.saved.includes(postId)) {
+            await User.findByIdAndUpdate(userId, { $pull: { saved: postId } });
+
+            updatedUser = await User.findById(userId).populate({
+                path: "saved",
+                populate: [
+                    { path: "author", select: "username profilePicture" },
+                    { path: "comment", populate: { path: "author", select: "username profilePicture" } },
+                    { path: "reaction", populate: { path: "author", select: "username profilePicture" } }
+                ]
+            });
+
+            return res.status(200).json({
+                message: 'Post removed from saved',
+                success: true,
+                savedPost: updatedUser.saved
+            });
+        } else {
+            await User.findByIdAndUpdate(userId, { $addToSet: { saved: postId } });
+
+            // Fetch updated user with populated saved posts
+            updatedUser = await User.findById(userId).populate({
+                path: "saved",
+                populate: [
+                    { path: "author", select: "username profilePicture" },
+                    { path: "comment", populate: { path: "author", select: "username profilePicture" } },
+                    { path: "reaction", populate: { path: "author", select: "username profilePicture" } }
+                ]
+            });
+
+            return res.status(200).json({
+                message: 'Post added to saved',
+                success: true,
+                savedPost: updatedUser.saved
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: 'Internal server error',
+            success: false,
+            error: error.message
+        });
+    }
+};

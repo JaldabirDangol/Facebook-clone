@@ -136,20 +136,53 @@ export const getProfile = async (req, res) => {
     }
     let user = await User.findById(userId).populate([
       {
-        path: "posts saved",
+        path: "posts",
         populate: [
           {
             path: "author",
             select: "username profilePicture"
           },
           {
-            path: "comments reactions",
-            options: { sort: { createdAt: -1 } }, // Sorting comments by createdAt
+            path: "comment",
+            options: { sort: { createdAt: -1 } }, 
             populate: {
               path: "author",
               select: "username profilePicture"
             }
-          }
+          },
+          {
+            path: "reaction",
+            options: { sort: { createdAt: -1 } }, 
+            populate: {
+              path: "author",
+              select: "username profilePicture"
+            }
+          },
+        ]
+      },
+      {
+        path: "saved",
+        populate: [
+          {
+            path: "author",
+            select: "username profilePicture"
+          },
+          {
+            path: "comment",
+            options: { sort: { createdAt: -1 } }, 
+            populate: {
+              path: "author",
+              select: "username profilePicture"
+            }
+          },
+          {
+            path: "reaction",
+            options: { sort: { createdAt: -1 } }, 
+            populate: {
+              path: "author",
+              select: "username profilePicture"
+            }
+          },
         ]
       },
       {
