@@ -9,7 +9,7 @@ router.route('/addpost').post(isAuthenticated,upload.single("photo"),addNewPost)
 router.route('/:id/reaction').get(isAuthenticated,postReaction);
 router.route('/:id/comment').post(isAuthenticated,addComment);
 router.route('getallcomment').get(isAuthenticated,getCommentOfPost);
-router.route('deletepost').get(isAuthenticated,deletePost);
+router.route('deletepost').delete(isAuthenticated,deletePost);
 router.route('savedpost').get(isAuthenticated,savedPost);
 
 

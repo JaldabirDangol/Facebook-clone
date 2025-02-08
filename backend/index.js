@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 import connectDB from './utils/db.js'
 import userRoutes from './routes/user.routes.js'
 import postRoutes from './routes/post.route.js'
+import messageRoutes from './routes/message.route.js'
 
 dotenv.config()
 const app = express();
@@ -14,13 +15,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
 
-// const corsOptions = {
-//   origin: "http://localhost:5173",
-//   credentials: true,
-// };
-
 app.use('/api/v1/user/',userRoutes);
 app.use('/api/v1/post',postRoutes);
+app.use('/api/v1/message',messageRoutes);
 
 app.get('/',(req,res)=>{
     res.send("hello i am working")
