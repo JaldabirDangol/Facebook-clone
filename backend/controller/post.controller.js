@@ -4,11 +4,12 @@ import sharp from "sharp";
 import cloudinary from "../utils/cloudinary.js";
 import { Reaction } from "../model/reaction.model.js";
 import {Comment} from '../model/comment.model.js'
+import { populate } from "dotenv";
 
 export const addNewPost = async (req, res) => {
   try {
     const userId = req.id;
-    const {caption} = req.body;
+    const {caption , visibility} = req.body;
     const photo = req.file;
     const user = await User.findById(userId);
 
@@ -39,6 +40,7 @@ export const addNewPost = async (req, res) => {
       caption,
       image: cloudResponse.secure_url,
       author: userId,
+      visibility:visibility || 'public'
     });
 
     if(post){
@@ -63,7 +65,21 @@ export const addNewPost = async (req, res) => {
 
 export const getAllPost = async (req,res)=>{
     try {
-        const post = await Post.find().sort({createdAt:-1})
+        const userId = req.id;
+        const user = await User.findById(userId);
+        const post = await Post.find({
+            $or:[
+                {visibility:'public'},
+                {
+                    visibility:'freinds',
+                    author:{$in:user.freinds}
+                },{
+                    author:userId
+                }
+            ],
+            
+        })
+        .sort({createdAt:-1})
         .populate([{
                 path:'author',
                 select:'username profilePicture'
@@ -169,7 +185,7 @@ export const postReaction = async (req, res) => {
                 success: false
             });
         }
-    };
+};
 
 export const addComment = async(req,res)=>{
     try {
@@ -342,3 +358,52 @@ export const savedPost = async (req, res) => {
         });
     }
 };
+
+export const sharePost = async(req,res)=>{
+    try {
+        const userId = req.id;
+        const postId = req.params.id;
+        const {caption } = req.body;
+        let user = await User.findById(userId);
+        const post = await Post.findById(postId);
+
+        if(!post){
+            return res.status(400).json({
+                message:'post not found',
+                success:true
+            })
+        }
+
+        const newShared = await Post.create({
+            author:userId,
+            issharedpost:postId,
+            caption:caption || '',
+        })
+
+        await user.updateOne({ $addToSet:{sharedpost:newShared._id} })
+        await user.populate({
+            path:'sharedpost',
+            populate:[{
+                path:'author',
+                select:'username profilePicture'
+            },
+            {
+                path:'issharedpost',
+                populate:{
+                    path:author,
+                    select:'username profilePicture caption image'
+                }
+            }
+        ]
+        })
+
+        return res.status(200).json({
+            message:'Post shared successfully!!',
+            success:true,
+        })
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
+
