@@ -40,7 +40,13 @@ const userSchema = new Schema({
     saved:[{
        type:mongoose.Schema.Types.ObjectId,
        ref:'Post'
-    }]
+    }],
+    blockeduser:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'User'
+        }
+    ]
 })
 
 export const User = mongoose.model("User",userSchema);

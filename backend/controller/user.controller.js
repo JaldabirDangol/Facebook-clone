@@ -5,6 +5,9 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import cloudinary from "../utils/cloudinary.js";
 import getDataUri from '../utils/datauri.js'
+import { Conversation } from "../model/conversation.model.js";
+import { Message } from "../model/message.model.js";
+import { Reaction } from "../model/reaction.model.js";
 dotenv.config();
 
 export const signup = async (req, res) => {
@@ -125,16 +128,33 @@ export const logout = async (req, res) => {
 };
 
 export const getProfile = async (req, res) => {
-    console.log('req reched in getprofile')
   try {
+    const myId = req.id;
+    const Me = await User.findById(myId);
     const userId = req.params.id;
+    let user = await User.findById(userId);
+
     if (!userId) {
       return res.status(400).json({
         message: "User doesnot exists",
         success: false,
       });
     }
-    let user = await User.findById(userId).populate([
+
+    if(Me.blockeduser.includes(userId)){
+      return res.status(400).json({
+        message:'User is blocked you cannot see Profile ...',
+        success:false
+      })
+    }
+
+   if(user.blockeduser.includes(myId)){
+      return res.status(400).json({
+    message:'User not found ',
+    success:false
+     })
+    }
+     await user.populate([
       {
         path: "posts",
         populate: [
@@ -203,21 +223,17 @@ export const editProfile = async(req,res)=>{
     try {
     const userId = req.id;
     const user = await User.findById(userId);
-    const { bio, gender } = req.body;
+    const { bio, gender , oldPassword ,newPassword } = req.body;
   
-    const profilePhoto = req.files?.profilePhoto?.[0]; // Extract first file
-    const coverPhoto = req.files?.coverPhoto?.[0]; // Extract first file
+    const profilePhoto = req.files?.profilePhoto?.[0]; 
+    const coverPhoto = req.files?.coverPhoto?.[0]; 
     
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
     
-    if(bio) {
-        user.bio = bio;
-    }
-    if(gender) {
-        user.gender = gender;
-    }
+    if(bio) user.bio = bio;
+    if(gender) user.gender = gender;
     if(profilePhoto) {
         const fileUri = getDataUri(profilePhoto)
         const cloud_response = await cloudinary.uploader.upload(fileUri)
@@ -228,14 +244,28 @@ export const editProfile = async(req,res)=>{
         const cloud_response = await cloudinary.uploader.upload(fileUri)
         user.coverPicture = cloud_response.secure_url;
     }
+    
+    if(oldPassword && newPassword){
+      const isPasswordMatch = await bcrypt.compare(oldPassword,user.password);
+      if(!isPasswordMatch){
+        return res.status(400).json({
+          message:'!Password doesnot match !!',
+          success:false
+        })
+      }
+      else{
+        user.password = newPassword
+      }
+    }
 
-     await user.save();
-     return res.status(200).json({
-      message:"profile updated successfully!",
-      success:true,
-      user
+    await user.save();
+    const updatedUser = await User.findById(user._id).select("-password");
+    return res.status(200).json({
+    message: "Profile updated successfully!",
+    success: true,
+    user: updatedUser
      });
-
+    
     } catch (error) {
         console.log(error)
     }
@@ -246,7 +276,7 @@ export const suggestedUser = async(req,res)=>{
     const userId = req.id;
     const user = await User.findById(userId);
     const friends = await User.find({_id:{$in:user.freinds}})
-    const suggestedUsers = await User.find({ _id: { $nin: [...user.freinds, user._id] } })
+    const suggestedUsers = await User.find({ _id: { $nin: [...user.freinds, user._id ,...user.blockeduser] } })
     .select('username profilePicture')
 
    return res.status(200).json({
@@ -296,6 +326,87 @@ export const freindsOrunfreinds = async(req,res)=>{
       })
     }
 
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const deleteAccount = async(req,res)=>{
+     try {
+        const userId = req.id;
+        const user = await User.findById(userId);
+
+        if(user){
+          await Promise.all([
+            Post.deleteMany({author:userId}),
+            Message.deleteMany({ $or: [{ senderId: userId }, { receiverId: userId }]})]),
+            Conversation.deleteMany({participants:{$in:[userId]}}),
+            Comment.deleteMany({author:userId}),
+            Reaction.deleteMany({author:userId}),
+            User.findByIdAndDelete(userId)
+        }
+
+        const stillExists = await User.findById(userId);
+        if(stillExists){
+          return res.status(401).json({
+            message:'Account deletion failed !!',
+            success:false
+          })
+        }
+
+        return res.status(200).json({
+          message:'Account deleted successfully!!',
+          success:true
+        })
+     } catch (error) {
+      console.log(error)
+     }
+}
+
+export const blockUsers = async(req,res)=>{
+  try {
+    const userId = req.id;
+    const user = await User.findById(userId);
+    const targetUser = req.params.id;
+    
+    if(!user || !targetUser){
+      return res.status(400).json({
+        msessage:'user is not found',
+        success:false
+      })
+    }
+
+    const isBlocked = user.blockeduser.includes(targetUser);
+    if(isBlocked){
+     await user.updateOne({ $pull:{blockeduser:targetUser} })
+     await user.save()
+
+      return res.status(200).json({
+           message:'User unblocked ',
+           success:true
+      })}
+
+     if(user.freinds.includes(targetUser)){
+          await Promise.all([
+            user.updateOne({ $addToSet:{blockeduser:targetUser }}),
+            user.updateOne({$pull:{freinds:targetUser}}),
+            user.save()
+          ]) 
+          return res.status(200).json({
+            message:'User blocked  successfully',
+            success:true
+       })}
+
+       await Promise.all([
+        user.updateOne({ $addToSet:{blockeduser:targetUser }}),
+        user.save()
+      ]) 
+
+      return res.status(200).json({
+        message:'User blocker successfully!!!',
+        success:true,
+      })
+      
   } catch (error) {
     console.log(error)
   }

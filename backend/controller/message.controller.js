@@ -30,7 +30,7 @@ export const sendMessage = async (req, res) => {
     });
     
     if (conversation) {
-         conversation.updateOne({
+        await conversation.updateOne({
             _id:conversation._id
          },{$push:{message:message._id}});
 
