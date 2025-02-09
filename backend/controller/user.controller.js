@@ -412,3 +412,64 @@ export const blockUsers = async(req,res)=>{
   }
 }
 
+export const mutualFriends = async(req,res)=>{
+  try {
+    const userId = req.id;
+    const user = await User.findById(userId);
+    const targetUserId = req.params.id;
+    const targetUser = await User.findById(targetUserId);
+    const myFreind = user.freinds;
+    const targetFriends = targetUser.freinds || [];
+   
+    if (!user || !targetUser) {
+      return res.status(404).json({
+        message: "User not found",
+        success: false
+      });
+    }
+    const mutualFriends = myFreind.filter(friend => targetFriends.includes(friend));
+    const populatedMutualFriends = await User.find({ _id: { $in: mutualFriends } })
+    .select('username profilePicture');
+
+    return res.status(200).json({
+      message:`you have ${mutualFriends.length} mutual friends`,
+      success:true,
+      mutualFriend:populatedMutualFriends
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const searchUser = async(req,res)=>{
+  try {
+    const userId = req.id;
+    const user = await User.findById(userId);
+    const {username} = req.body;
+    if (!username) {
+      return res.status(400).json({
+        message: 'Username is required',
+        success: false
+      });
+    }
+    const users = await User.find({
+      _id: { $nin: user.blockeduser },
+      username: { $regex: new RegExp(username, 'i') }
+    }).select('username profilePicture');
+  
+    if (users.length === 0) {
+      return res.status(404).json({
+        message: 'User not found',
+        success: false
+      });
+    }
+    return res.status(200).json({
+      message:'User found',
+      users,
+      success:true
+    })
+
+  } catch (error) {
+    console.log(error)
+  }
+}
