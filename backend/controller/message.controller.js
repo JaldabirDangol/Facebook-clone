@@ -92,6 +92,32 @@ export const getMessage = async(req,res)=>{
 
 }
 
+export const deleteMessage = async(req,res)=>{
+    try {
+        const userId = req.id;
+        const messageId = req.params.id;
+        const message = await Message.findById(messageId);
+       
+        if (message.senderID.toString() !== userId) {
+            return res.status(403).json({ message: "Unauthorized action", success: false });
+        } 
+
+            await Promise.all[
+                Message.findByIdAndDelete(messageId),
+                Conversation.updateOne({
+                    $pull:{message:messageId}
+                })
+            ] 
+            return res.status(200).json({
+                message:'Message deleted',
+                success:true
+            })
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export const deleteConversation = async(req,res)=>{
     try {
         const userId = req.id;
