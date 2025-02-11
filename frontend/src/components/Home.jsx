@@ -9,9 +9,9 @@ const Home = () => {
       <Navbar/>
       <div className='flex justify-between'>
         <LeftSideBar />
-            <div className='mr-4'>
+           
             <RightSideBar />
-            </div>
+            
       </div>
 
     </div>

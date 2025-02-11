@@ -446,7 +446,7 @@ export const searchUser = async(req,res)=>{
   try {
     const userId = req.id;
     const user = await User.findById(userId);
-    const {username} = req.body;
+    const {username} = req.query;
     if (!username) {
       return res.status(400).json({
         message: 'Username is required',

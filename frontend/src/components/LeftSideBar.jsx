@@ -41,7 +41,7 @@ const LeftSideBar = () => {
             navigate('/profile');
             break;
         case "Findfriends":
-            navigate('/findfriends');
+            navigate('/friends');
             break;
         case "Saved":
             navigate('/saved');
@@ -81,7 +81,7 @@ const logOutHandler = async () => {
     }
   };
   return (
-    <div className="bg-gray-100 w-[25%] h-[75%] flex flex-col">
+    <div className="bg-gray-100 w-[25%] h-screen flex flex-col">
       {
         sidebarItems.map((item,index)=>{
             return(
@@ -94,6 +94,10 @@ const logOutHandler = async () => {
             )
         })
       }
+      <hr className="border-b mt-2 bg-slate-400"/>
+      <div className="text-slate-600 font-semibold ml-4 mt-4">
+        Your Shortcuts
+      </div>
     </div>
   );
 };
