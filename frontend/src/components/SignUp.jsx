@@ -19,14 +19,6 @@ const SignUp = () => {
     gender: "",
   });
 
-  // const changeEventHandlerG = (e) => {
-  //   const { name, value, type, checked } = e.target;
-  
-  //   setInputInfo((prev) => ({
-  //     ...prev,
-  //     [name]: type === "radio" ? value : checked ? value : "",
-  //   }));
-  // };
   
   const changeEventHandler = (e) => {
     setInputInfo({ ...inputInfo, [e.target.name]: e.target.value });
@@ -42,7 +34,6 @@ const SignUp = () => {
           withCredentials:true
        });
       if(res.data.success){
-        console.log('gkhgku')
         toast.success(res.data.message)
         setInputInfo({
           username:'',
@@ -132,7 +123,7 @@ const SignUp = () => {
               value={inputInfo.password}
               name="password"
               onChange={changeEventHandler}
-              placeholder="passworxd"
+              placeholder="password"
             />
           </div>
 

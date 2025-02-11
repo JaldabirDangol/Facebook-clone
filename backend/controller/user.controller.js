@@ -53,7 +53,7 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  try {
+  try { 
     const { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({
@@ -95,7 +95,7 @@ export const login = async (req, res) => {
       _id: user._id,
       username: user.username,
       email: user.email,
-      profilepicture: user.profilepicture,
+      profilePicture: user.profilePicture,
       bio: user.bio,
       freinds: user.freinds,
       posts: populatedPosts,
@@ -108,7 +108,7 @@ export const login = async (req, res) => {
         maxAge: 1 * 24 * 60 * 60 * 1000,
       })
       .json({
-        // message:`Welcome back ${user.username}`,
+        message:`Welcome back ${user.username}`,
         user,
         success: true,
       });
@@ -120,7 +120,7 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
   try {
     return res.cookie("logincookie", "", { maxAge: 0 }).json({
-      msessage: "Logged out succesfully",
+      message: "Logged out succesfully",
       success: true,
     });
   } catch (error) {
