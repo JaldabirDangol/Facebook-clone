@@ -12,7 +12,7 @@ dotenv.config();
 
 export const signup = async (req, res) => {
   try {
-    const { email, password, username } = req.body;
+    const { email, password, username ,gender } = req.body;
     if (!email || !password || !username) {
       return res.status(401).json({
         message: "something is missing ",
@@ -34,6 +34,7 @@ export const signup = async (req, res) => {
       username: username,
       password: bcryptPassword,
       email: email,
+      gender:gender
     });
 
     res.status(201).json({
@@ -43,8 +44,8 @@ export const signup = async (req, res) => {
         email,
         password,
       },
-      message: "Account created successfully !",
       success: true,
+      message: "Account created successfully !"
     });
   } catch (error) {
     console.log(error);

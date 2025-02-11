@@ -1,14 +1,23 @@
-import { useState } from 'react'
-import Signup from './components/Signup'
+import Signup from './components/SignUp'
+import Login from './components/Login'
 import './App.css'
+import { createBrowserRouter } from 'react-router-dom'
 
+const browserRouter = createBrowserRouter([
+  {
+    path:'/login',
+    element:<Login/>
+  } ,
+  {
+    path:'/signup',
+    element:<Signup/>
+  }
+])
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
+    <div>
      <Signup/>
-    </>
+    </div>
   )
 }
 

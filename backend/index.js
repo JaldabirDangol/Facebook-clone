@@ -10,10 +10,15 @@ import messageRoutes from './routes/message.route.js'
 dotenv.config()
 const app = express();
 const PORT = process.env.PORT || 3767;
-app.use(cors())
 app.use(express.json());
 app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
+
+const corsOption = {
+    origin: process.env.URL,
+    credentials:true
+}
+app.use(cors(corsOption))
 
 app.use('/api/v1/user/',userRoutes);
 app.use('/api/v1/post',postRoutes);
@@ -22,6 +27,7 @@ app.use('/api/v1/message',messageRoutes);
 app.get('/',(req,res)=>{
     res.send("hello i am working")
 })
+
 
 app.listen(PORT,()=>{
     connectDB();
