@@ -13,13 +13,15 @@ import { useNavigate } from "react-router-dom";
 import { backendurl } from "../../configurl";
 import { toast } from "sonner";
 import axios from "axios";
+import { useSelector } from "react-redux";
 const LeftSideBar = () => {
     const navigate = useNavigate(); 
+    const {user} = useSelector(store => store.auth)
   const sidebarItems = [
     {
       icon: (
         <Avatar className="w-7 h-7">
-          {/* <AvatarImage src={user?.profilepicture} /> */}
+          <AvatarImage src={user?.profilePicture} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       ),
@@ -34,11 +36,10 @@ const LeftSideBar = () => {
     { icon: <BsCameraReels size={32} color="#be9e0c" /> , text:'Reels'},
     { icon: <LogOut size={32} color="#4e2828"/>, text: "Logout" },
   ];
-
   const sidebarHandler = (text) => {
     switch (text) {
         case "Profile":
-            navigate('/profile');
+            navigate(`/profile/${user._id}`);
             break;
         case "Findfriends":
             navigate('/friends');

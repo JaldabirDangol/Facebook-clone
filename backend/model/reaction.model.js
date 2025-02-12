@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const reactionSchema = new mongoose.Schema({
-    type: { 
+    reaction: { 
         type: String, 
         enum: ["like", "love", "haha", "care", "sad", "angry"], 
         required: true 

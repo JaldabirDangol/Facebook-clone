@@ -23,6 +23,8 @@ const RightSideBar = () => {
         </div>
         <hr className="border-slate-300  mt-6" />
         <h2 className='mt-4 text-slate-700 font-bold'>Groups chats</h2>
+        <h2 className='mt-4 text-slate-700 font-bold'>Online User</h2>
+        
          
        </div>
     </div>

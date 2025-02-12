@@ -135,7 +135,7 @@ export const postReaction = async (req, res) => {
             const existingReaction = await Reaction.findOne({ author: userId, post: postId });
     
             if (existingReaction) {
-                if (existingReaction.type === Rtype) {
+                if (existingReaction.reaction === Rtype) {
                     await existingReaction.deleteOne();
                     await Post.updateOne(
                         { _id: postId },
@@ -147,17 +147,21 @@ export const postReaction = async (req, res) => {
                         success: true
                     });
                 } else {
-                    existingReaction.type = Rtype;
+                    existingReaction.reaction = Rtype;
+                    existingReaction.populate({
+                        path:'author',
+                        select:'username profilePicture'
+                    })
                     await existingReaction.save();
-    
                     return res.status(200).json({
                         message: "Reaction updated!",
-                        success: true
+                        success: true,
+                        reaction:existingReaction
                     });
                 }
             }
             const reaction = new Reaction({
-                type: Rtype,
+                reaction: Rtype,
                 author: userId,
                 post: postId
             });
@@ -168,7 +172,7 @@ export const postReaction = async (req, res) => {
                 { $addToSet: { reaction: reaction._id } }
             );
         
-            reaction.populate({
+           await reaction.populate({
                 path:'author',
                 select:'username profilePicture'
             })

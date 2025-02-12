@@ -7,11 +7,14 @@ import { Loader2 } from "lucide-react";
 import axios from 'axios';
 import { backendurl } from "../../configurl";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { setAuthUser } from "../../store/authSlice";
 
 
 const Login = () => {
   const navigate = useNavigate()
   const [loading,setLoading] = useState(false)
+  const dispatch = useDispatch();
   const [inputInfo, setInputInfo] = useState({
     password: "",
     email: "",
@@ -31,7 +34,8 @@ const Login = () => {
           withCredentials:true
        });
       if(res.data.success){
-        toast.success(res.data.message)
+        dispatch(setAuthUser(res.data.user))
+        toast.success(res.data.message);
         setInputInfo({
           password:'',
           email:'',
