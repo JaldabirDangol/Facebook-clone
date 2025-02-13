@@ -12,6 +12,5 @@ const userSchema = new Schema({
   freinds: [{type: mongoose.Schema.Types.ObjectId,ref: "User",}, ],
   saved: [{type: mongoose.Schema.Types.ObjectId,ref: "Post",},],
   blockeduser: [{type: mongoose.Schema.Types.ObjectId, ref: "User",},],
-  sharepost:[{type:mongoose.Schema.Types.ObjectId},{ ref:'Post'}]
 });
 export const User = mongoose.model("User", userSchema);

@@ -81,15 +81,15 @@ export const login = async (req, res) => {
     });
 
     //populate post
-    const populatedPosts = await Promise.all(
+    const populatedPosts = (await Promise.all(
       user.posts.map(async (postId) => {
-        const post = await Post.findById(postId);
-        if (post.author.equals(user._id)) {
-          return post;
-        }
-        return null;
+          const post = await Post.findById(postId);
+          if (post && post.author.equals(user._id)) {
+              return post;
+          }
+          return null;
       })
-    );
+  )).filter(post => post !== null); 
 
     user = {
       _id: user._id,

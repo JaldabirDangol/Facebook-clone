@@ -132,25 +132,9 @@ const Profile = () => {
 
     {activeTab === "posts" && displayTab.length > 0 && (
       <div className="flex flex-col  w-full">
-        {displayTab.map((post) => (
-          <div key={post._id} className="flex flex-col mx-auto mt-4 border w-2/3  rounded-md shadow-sm p-2">
-            <div className="flex justify-between items-center">
-              <Avatar>
-                <AvatarImage src={post?.author?.profilePicture} />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-              <h3 className="font-semibold">{post?.author?.username}</h3>
-            </div>
-            {post.caption && <span className="mt-2">{post.caption}</span>}
-            {post.image ? (
-              <img src={post.image} alt="postimage" className="mt-2 w-full" />
-            ) : (
-              <div className="bg-gray-300 h-40 w-full flex items-center justify-center">
-                No Image Available
-              </div>
-            )}
-          </div>
-        ))}
+         {
+          
+         }
       </div>
     )}
   </div>

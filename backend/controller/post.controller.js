@@ -98,9 +98,15 @@ export const getAllPost = async (req,res)=>{
                     select:'username profilePicture'
                 }
             },
-           
+            {
+                path:'issharedpost',
+                populate:{
+                    path:'author',
+                    select:'username profilePicture'
+                }
+            }
         ])
-        
+
         return res.status(200).json({
             message:'Watch feed',
             success:true,
@@ -117,7 +123,7 @@ export const postReaction = async (req, res) => {
             const postId = req.params.id;
             const { Rtype } = req.body;
     
-            const validReactions = ["like", "love", "haha", "care", "sad", "angry"];
+            const validReactions = ["like", "love", "haha", "wow", "sad", "angry"];
             if (!validReactions.includes(Rtype)) {
                 return res.status(400).json({
                     message: "Invalid reaction type!",
@@ -265,7 +271,6 @@ export const deletePost = async(req,res)=>{
         const postId = req.params.id;
         const post = await Post.findById(postId);
         const user = await User.findById(userId);
-
         if(!post){
             return res.status(401).json({
                 message:'post does not exists',
@@ -281,12 +286,12 @@ export const deletePost = async(req,res)=>{
         }
         
         await Promise.all([
-        post.findByIdAndDelete(postId),
+        Post.findByIdAndDelete(postId),
         Comment.deleteMany( {post:postId}),
         Reaction.deleteMany({post:postId}),
        ])
       
-       user.posts = user.posts.filter(post => post !== postId);
+       user.posts = user.posts.filter(post => post._id !== postId);
        await user.save()
     
        return res.status(201).json({
@@ -303,7 +308,6 @@ export const savedPost = async (req, res) => {
     try {
         const userId = req.id; 
         const postId = req.params.id;
-
         // Find user and post
         const user = await User.findById(userId);
         const post = await Post.findById(postId);
@@ -384,22 +388,7 @@ export const sharePost = async(req,res)=>{
             caption:caption || '',
         })
 
-        await user.updateOne({ $addToSet:{sharedpost:newShared._id} })
-        await user.populate({
-            path:'sharedpost',
-            populate:[{
-                path:'author',
-                select:'username profilePicture'
-            },
-            {
-                path:'issharedpost',
-                populate:{
-                    path:author,
-                    select:'username profilePicture caption image'
-                }
-            }
-        ]
-        })
+        await user.updateOne({ $addToSet:{posts:newShared._id} })
 
         return res.status(200).json({
             message:'Post shared successfully!!',
