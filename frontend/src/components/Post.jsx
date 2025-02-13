@@ -12,8 +12,6 @@ import { backendurl } from '../../configurl'
 import { setAllpost, setSelectedPost } from '../../store/postSlice'
 import CommentDialog from './CommentDialog'
 import { useNavigate } from 'react-router-dom';
-
-
 const reactions = [
     { name: 'like', icon: <FaThumbsUp className="text-blue-500 h-5 w-5" /> },
     { name: 'love', icon: <FaHeart className="text-red-500 h-5 w-5" /> },
@@ -22,7 +20,6 @@ const reactions = [
     { name: 'sad', icon: <FaSadTear className="text-yellow-500 h-5 w-5" /> },
     { name: 'angry', icon: <FaAngry className="text-red-500 h-5 w-5" /> }
 ];
-
 const Post = ({ post }) => {
     const [text, setText] = useState("");
     const [open, setOpen] = useState(false);
@@ -33,12 +30,10 @@ const Post = ({ post }) => {
     const [comment, setComment] = useState(post.comments);
     const [threeDot, setThreeDot] = useState(false);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-
+    const navigate = useNavigate(); 
     const handleInputChange = (e) => {
         setText(e.target.value.trim() ? e.target.value : "");
     };
-
     const toggleReactionHandler = async (reactionType) => {
         try {
             // Check if user already reacted
@@ -72,8 +67,6 @@ const Post = ({ post }) => {
                         : [...p.reaction, { author: user._id, reaction: reactionType.name }]
                 } : p)));
 
-
-
                 toast.success(res.data.message);
             }
         } catch (error) {
@@ -81,7 +74,6 @@ const Post = ({ post }) => {
             toast.error(error?.response?.data?.message );
         }
     };
-
     const commentHandler = async () => {
         try {
             const res = await axios.post(`${backendurl}/api/v1/post/${post._id}/comment`, { text }, {
@@ -107,7 +99,6 @@ const Post = ({ post }) => {
             console.log(error);
         }
     }
-
     const deletePostHandler = async () => {
         try {
             const res = await axios.delete(`${backendurl}/api/v1/post/delete/${selectedpost._id}`, { withCredentials: true })
@@ -121,7 +112,6 @@ const Post = ({ post }) => {
             toast.error(error?.response?.data?.messsage);
         }
     }
-
     const bookmarkHandler = async () => {
         try {
             const res = await axios.get(`${backendurl}/api/v1/post/${selectedpost._id}/savepost`, { withCredentials: true });
@@ -133,7 +123,6 @@ const Post = ({ post }) => {
             toast.error(error.response.data.message)
         }
     }
-
  if (!post.issharedpost) {
         return (
             <Card className="my-10 w-full relative max-w-xl mx-auto border shadow-sm rounded-lg overflow-hidden">
@@ -192,7 +181,7 @@ const Post = ({ post }) => {
                         <span onClick={() => {
                             dispatch(setSelectedPost(post));
                             setOpen(true);
-                        }} className='cursor-pointer text-sm '>{post?.comments?.length} comments</span> • <span>682 shares</span>
+                        }} className='cursor-pointer text-sm '>{post?.comment?.length} comments</span> • <span>682 shares</span>
                     </div>
                 </div>
 
@@ -311,7 +300,7 @@ const Post = ({ post }) => {
                     <span onClick={() => {
                         dispatch(setSelectedPost(post));
                         setOpen(true);
-                    }} className='cursor-pointer text-sm '>{post?.comments?.length} comments</span> • <span>682 shares</span>
+                    }} className='cursor-pointer text-sm '>{post?.comment?.length} comments</span> • <span>682 shares</span>
                 </div>
             </div>
 
@@ -358,5 +347,4 @@ const Post = ({ post }) => {
         );
     };
 }
-
 export default Post

@@ -6,6 +6,8 @@ import './App.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Friends from './components/Friends'
 import Profile from './components/Profile'
+import { Navbar } from './components/Navbar'
+import UserProfile from './components/UserProfile'
 
 const browserRouter = createBrowserRouter([
   {
@@ -23,7 +25,7 @@ const browserRouter = createBrowserRouter([
   },
   {
    path:'/profile/:id',
-   element:<Profile/>
+   element:<UserProfile/> ,
   },
   {
     path:'/login',

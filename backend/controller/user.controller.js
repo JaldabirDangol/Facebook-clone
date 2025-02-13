@@ -179,6 +179,22 @@ export const getProfile = async (req, res) => {
               select: "username profilePicture"
             }
           },
+          {
+            path: "issharedpost", 
+            populate: [
+              { path: "author", select: "username profilePicture" },
+              {
+                path: "comment",
+                options: { sort: { createdAt: -1 } },
+                populate: { path: "author", select: "username profilePicture" },
+              },
+              {
+                path: "reaction",
+                options: { sort: { createdAt: -1 } },
+                populate: { path: "author", select: "username profilePicture" },
+              },
+            ],
+          },
         ]
       },
       {
@@ -224,8 +240,7 @@ export const editProfile = async(req,res)=>{
     try {
     const userId = req.id;
     const user = await User.findById(userId);
-    const { bio, gender , oldPassword ,newPassword } = req.body;
-  
+    const { bio , gender , oldPassword ,newPassword } = req.body;
     const profilePhoto = req.files?.profilePhoto?.[0]; 
     const coverPhoto = req.files?.coverPhoto?.[0]; 
     

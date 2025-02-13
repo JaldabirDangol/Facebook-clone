@@ -4,7 +4,7 @@ import { backendurl } from '../../configurl'
 import { useDispatch } from 'react-redux'
 import { setUserProfile } from '../../store/authSlice'
 
-export const useGetUserProfile = async(userId) => {
+const useGetUserProfile = async(userId) => {
     const dispatch = useDispatch();
     useEffect(()=>{
        const fetchUserProfile = async()=>{
@@ -22,3 +22,5 @@ export const useGetUserProfile = async(userId) => {
        fetchUserProfile()
     },[userId])
 }
+
+export default useGetUserProfile;
