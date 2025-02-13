@@ -9,7 +9,7 @@ const CreatePost = () => {
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 w-full max-w-md mx-auto">
+    <div className="bg-white shadow-md rounded-lg p-4 w-2/3 mx-auto mt-1 ">
       {/* Top Section: Avatar & Input */}
       <div className="flex items-center space-x-3">
         <Avatar className="w-10 h-10">

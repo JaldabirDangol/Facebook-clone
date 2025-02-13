@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { Dialog, DialogContent, DialogHeader } from './ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
@@ -35,7 +35,7 @@ const CreatePostDialog = ({open,setOpen}) => {
     const createPostHandler = async (e) => {
         const formData = new FormData();
         formData.append("caption", caption);
-        if (imagePreview) formData.append("image", file);
+        if (imagePreview) formData.append("photo", file);
         try {
             setLoading(true);
             const res = await axios.post(`${backendurl}/api/v1/post/addpost`, formData, {
@@ -45,7 +45,7 @@ const CreatePostDialog = ({open,setOpen}) => {
                 withCredentials: true
             });
             if (res.data.success) {
-                dispatch(setAllpost([res.data.post,...posts]));// [1] -> [1,2] -> total element = 2
+                dispatch(setAllpost([res.data.post,...posts]));  // [1] -> [1,2] -> total element = 2
                 toast.success(res.data.message);
                 setOpen(false);
             }
@@ -59,7 +59,7 @@ const CreatePostDialog = ({open,setOpen}) => {
     return (
         <Dialog open={open}>
           <DialogContent onInteractOutside={() => setOpen(false)}>
-            <DialogHeader className='text-center font-semibold'>Create New Post</DialogHeader>
+            <DialogTitle className='text-center font-semibold'>Create New Post</DialogTitle>
             <div className='flex gap-3 items-center'>
               <Avatar>
                 <AvatarImage src={user?.profilePicture} alt="img" />

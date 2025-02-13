@@ -71,7 +71,7 @@ export const Navbar = () => {
   };
 
   return (
-      <div className="relative w-screen border rounded-lg bg-white flex items-center justify-between">
+      <div className=" w-screen border rounded-lg bg-white flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center justify-start ml-4 gap-2">
           <img src={logo} alt="Logo" className="h-16 w-16 object-contain cursor-pointer" />
           <div className="flex items-center relative w-full">
@@ -83,7 +83,7 @@ export const Navbar = () => {
               onChange={(e) => setSearchBox(e.target.value)}
               className="border border-gray-300 rounded-xl
      bg-gray-100 outline-none focus:outline-none focus:ring-0
-      focus:border-gray-300 focus:shadow-none w-80"
+      focus:border-gray-300 focus:shadow-none w-80 "
               placeholder="Search Facebook"
             />
             {searchBox.trim() && (
