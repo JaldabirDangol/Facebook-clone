@@ -125,7 +125,7 @@ const Post = ({ post }) => {
     }
  if (!post.issharedpost) {
         return (
-            <Card className="my-10 w-full relative max-w-xl mx-auto border shadow-sm rounded-lg overflow-hidden">
+            <Card className="my-10 max-w-2xl  w-2/3 relative  mx-auto border shadow-sm rounded-lg overflow-hidden">
                 {/* Post Header */}
                 <div className="flex items-center justify-between pt-3 pl-3 pr-3 ">
                     <div className="flex items-center gap-3">
@@ -229,7 +229,7 @@ const Post = ({ post }) => {
     else {
     return (
         post.issharedpost && 
-        <Card className="my-10 w-full relative max-w-xl mx-auto border shadow-sm rounded-lg overflow-hidden">
+        <Card className="my-10  relative max-w-2xl  w-2/3 mx-auto border shadow-sm rounded-lg overflow-hidden">
             {/* Post Header */}
             <div className="flex items-center justify-between pt-3 pl-3 pr-3">
                 <div className="flex items-center gap-3">

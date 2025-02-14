@@ -8,6 +8,7 @@ import Friends from './components/Friends'
 import Profile from './components/Profile'
 import { Navbar } from './components/Navbar'
 import UserProfile from './components/UserProfile'
+import EditProfile from './components/EditProfile'
 
 const browserRouter = createBrowserRouter([
   {
@@ -23,18 +24,14 @@ const browserRouter = createBrowserRouter([
       }
     ]
   },
-  {
-   path:'/profile/:id',
-   element:<UserProfile/> ,
-  },
-  {
-    path:'/login',
+  { path:'/profile/:id',
+   element:<UserProfile/> 
+   ,},
+  { path:'/login',
     element:<Login/>
   } ,
-  {
-    path:'/signup',
-    element:<Signup/>
-  },
+  {  path:'/signup',
+    element:<Signup/> },
 ])
 function App() {
   return (

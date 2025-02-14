@@ -8,9 +8,9 @@ router.route('/signup').post(signup);
 router.route('/login').post(login);
 router.route('/logout').get(logout);
 router.route('/profile/:id').get(isAuthenticated,getProfile);
-router.route('/profile/editprofile').post(isAuthenticated, upload.fields([{ name: 'profilePhoto' }, { name: 'coverPhoto' }]), editProfile);
+router.route('/profile/:id/editprofile').post(isAuthenticated, upload.fields([{ name: 'profilePhoto' }, { name: 'coverPhoto' }]), editProfile);
 router.route('/suggesteduser').get(isAuthenticated,suggestedUser);
-router.route('/friendorunfreind').get(isAuthenticated,freindsOrunfreinds);
+router.route('/:id/friendorunfreind').get(isAuthenticated,freindsOrunfreinds);
 router.route('/search').get(isAuthenticated,searchUser);
 router.route('/friends').get(isAuthenticated,getFriends)
 

@@ -5,6 +5,7 @@ import LeftSideBar from "./LeftSideBar";
 import RightSideBar from "./RightSideBar";
 
 const MainLayout = () => {
+ 
   return (
     <div className="w-screen h-screen">
       <Navbar />

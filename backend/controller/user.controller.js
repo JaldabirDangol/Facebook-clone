@@ -309,7 +309,8 @@ export const freindsOrunfreinds = async(req,res)=>{
   try {
     const userId = req.id;
     const targetUser = req.params.id;
-    const user = await User.findById(userId);
+    let targetUserP = await User.findById(targetUser);
+    let user = await User.findById(userId);
 
     if(userId === targetUser ){
       return res.status(401).json({
@@ -318,29 +319,222 @@ export const freindsOrunfreinds = async(req,res)=>{
       })
     }
  
-    const isFriends = await user.freinds.includes(targetUser);
+    const isFriends =  user.freinds.includes(targetUser) && targetUserP.freinds.includes(userId);
+    
     if(isFriends){
       await Promise.all([
-        user.updateOne({_id:userId},{$pull:{freinds:targetUser}}),
-        user.updateOne({_id:targetUser},{$pull:{freinds:userId}})
+        User.updateOne({_id:userId},{$pull:{freinds:targetUser}}),
+        User.updateOne({_id:targetUser},{$pull:{freinds:userId}}),
+        
       ])
+      const populatedPosts = (await Promise.all(
+        user.posts.map(async (postId) => {
+            const post = await Post.findById(postId);
+            if (post && post.author.equals(user._id)) {
+                return post;
+            }
+            return null;
+        })
+    )).filter(post => post !== null); 
+  
+      user = {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        profilePicture: user.profilePicture,
+        bio: user.bio,
+        freinds: user.freinds,
+        posts: populatedPosts,
+      };
 
-      return res.status(401).json({
-        message:'user has been added to freindlist',
+  
+      await targetUserP.populate([
+        {
+          path: "posts",
+          populate: [
+            {
+              path: "author",
+              select: "username profilePicture"
+            },
+            {
+              path: "comment",
+              options: { sort: { createdAt: -1 } }, 
+              populate: {
+                path: "author",
+                select: "username profilePicture"
+              }
+            },
+            {
+              path: "reaction",
+              options: { sort: { createdAt: -1 } }, 
+              populate: {
+                path: "author",
+                select: "username profilePicture"
+              }
+            },
+            {
+              path: "issharedpost", 
+              populate: [
+                { path: "author", select: "username profilePicture" },
+                {
+                  path: "comment",
+                  options: { sort: { createdAt: -1 } },
+                  populate: { path: "author", select: "username profilePicture" },
+                },
+                {
+                  path: "reaction",
+                  options: { sort: { createdAt: -1 } },
+                  populate: { path: "author", select: "username profilePicture" },
+                },
+              ],
+            },
+          ]
+        },
+        {
+          path: "saved",
+          populate: [
+            {
+              path: "author",
+              select: "username profilePicture"
+            },
+            {
+              path: "comment",
+              options: { sort: { createdAt: -1 } }, 
+              populate: {
+                path: "author",
+                select: "username profilePicture"
+              }
+            },
+            {
+              path: "reaction",
+              options: { sort: { createdAt: -1 } }, 
+              populate: {
+                path: "author",
+                select: "username profilePicture"
+              }
+            },
+          ]
+        },
+        {
+          path: "freinds",
+          select: "username profilePicture"
+        }
+      ]);
+     
+      return res.status(200).json({
+        message:'user has removed from freindlist',
         success:true,
+        user,
+        targetUser:targetUserP
       })
 
     }else if( !isFriends ){
       await Promise.all([
-        user.updateOne({_id:userId},{$push:{freinds:targetUser}}),
-        user.updateOne({_id:targetUser},{$push:{freinds:userId}})
+        User.updateOne({_id:userId},{$push:{freinds:targetUser}}),
+        User.updateOne({_id:targetUser},{$push:{freinds:userId}}),
       ])
+      const populatedPosts = (await Promise.all(
+        user.posts.map(async (postId) => {
+            const post = await Post.findById(postId);
+            if (post && post.author.equals(user._id)) {
+                return post;
+            }
+            return null;
+        })
+    )).filter(post => post !== null); 
+  
+      user = {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        profilePicture: user.profilePicture,
+        bio: user.bio,
+        freinds: user.freinds,
+        posts: populatedPosts,
+      };
 
-      return res.status(401).json({
-        message:'user has been removed from freindlist',
+  
+      await targetUserP.populate([
+        {
+          path: "posts",
+          populate: [
+            {
+              path: "author",
+              select: "username profilePicture"
+            },
+            {
+              path: "comment",
+              options: { sort: { createdAt: -1 } }, 
+              populate: {
+                path: "author",
+                select: "username profilePicture"
+              }
+            },
+            {
+              path: "reaction",
+              options: { sort: { createdAt: -1 } }, 
+              populate: {
+                path: "author",
+                select: "username profilePicture"
+              }
+            },
+            {
+              path: "issharedpost", 
+              populate: [
+                { path: "author", select: "username profilePicture" },
+                {
+                  path: "comment",
+                  options: { sort: { createdAt: -1 } },
+                  populate: { path: "author", select: "username profilePicture" },
+                },
+                {
+                  path: "reaction",
+                  options: { sort: { createdAt: -1 } },
+                  populate: { path: "author", select: "username profilePicture" },
+                },
+              ],
+            },
+          ]
+        },
+        {
+          path: "saved",
+          populate: [
+            {
+              path: "author",
+              select: "username profilePicture"
+            },
+            {
+              path: "comment",
+              options: { sort: { createdAt: -1 } }, 
+              populate: {
+                path: "author",
+                select: "username profilePicture"
+              }
+            },
+            {
+              path: "reaction",
+              options: { sort: { createdAt: -1 } }, 
+              populate: {
+                path: "author",
+                select: "username profilePicture"
+              }
+            },
+          ]
+        },
+        {
+          path: "freinds",
+          select: "username profilePicture"
+        }
+      ]);
+      return res.status(200).json({
+        message:'user has been added to  freindlist',
         success:true,
+        user,
+        targetUser:targetUserP
       })
     }
+
+  
 
   } catch (error) {
     console.log(error)
