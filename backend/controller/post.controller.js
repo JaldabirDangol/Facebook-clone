@@ -386,9 +386,11 @@ export const sharePost = async(req,res)=>{
             author:userId,
             issharedpost:postId,
             caption:caption || '',
+            image:post.image
         })
 
         await user.updateOne({ $addToSet:{posts:newShared._id} })
+        await user.save()
 
         return res.status(200).json({
             message:'Post shared successfully!!',
