@@ -1,5 +1,4 @@
 import React from "react";
-import { Navbar } from "./Navbar";
 import { FaUserFriends } from "react-icons/fa";
 import {LogOut } from 'lucide-react'
 import { RiMemoriesFill } from "react-icons/ri";
@@ -15,10 +14,9 @@ import { toast } from "sonner";
 import axios from "axios";
 import { useSelector } from "react-redux";
 const LeftSideBar = () => {
-
     const navigate = useNavigate(); 
     const {user} = useSelector(store => store.auth)
-  const sidebarItems = [
+    const sidebarItems = [
     {
       icon: (
         <Avatar className="w-7 h-7">

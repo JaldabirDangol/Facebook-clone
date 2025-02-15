@@ -9,14 +9,14 @@ import { Button } from "./ui/button";
 import { IoBookmarkOutline } from "react-icons/io5";
 import { Camera, MoreHorizontal } from "lucide-react";
 import Post from "./Post";
-import { setSelectedPost } from "../../store/postSlice";
+import { setAllpost, setSelectedPost } from "../../store/postSlice";
 import EditProfile from "./EditProfile";
-import useGetUserProfile from "@/hooks/useGetUserProfile";
 import CreatePost from "./CreatePost";
 import axios from "axios";
 import { backendurl } from "../../configurl";
 import { toast } from "sonner";
 import { setAuthUser, setUserProfile } from "../../store/authSlice";
+import useGetUserProfile from "@/hooks/useGetUserProfile";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -25,22 +25,25 @@ const Profile = () => {
   useGetUserProfile(userId);
   const [activeTab, setActiveTab] = useState("posts");
   const { userProfile, user } = useSelector((store) => store.auth);
-  console.log("userfeinds", userProfile.freinds.length);
-  const isLoggedInUserProfile = user?._id === userId;
-  const [isFriend, setIsFriend] = useState(user?.freinds?.includes(userId));
+  const { selectedpost } = useSelector((store) => store.post);
+  const isLoggedInUserProfile = user?._id === userProfile?._id;
   const [displayTab, setDisplayTab] = useState([]);
   const [bio, SetBio] = useState("");
   const [threeDot, setThreeDot] = useState(false);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  console.log(isLoggedInUserProfile);
+  const [isFriend, setIsFriend] = useState(
+    user?.freinds?.includes(userProfile._id)
+  );
 
   useEffect(() => {
     setDisplayTab(userProfile?.posts || []);
-    if (user._id === userProfile._id) {
-      setActiveTab((prevTab) => prevTab || "saved");
-    } else {
-      setActiveTab("posts");
-    }
+    // if (user._id === userProfile._id) {
+    //   setActiveTab((prevTab) => prevTab || "saved");
+    // } else {
+    //   setActiveTab("posts");
+    // }
   }, [userProfile]);
 
   const handleTabChange = (tab) => {
@@ -83,6 +86,45 @@ const Profile = () => {
       console.log(error);
     }
   };
+
+  if (!userProfile && !user) {
+    return <p>Loading...</p>;
+  }
+  const deletePostHandler = async () => {
+    try {
+      const res = await axios.delete(
+        `${backendurl}/api/v1/post/delete/${selectedpost._id}`,
+        { withCredentials: true }
+      );
+      if (res.data.success) {
+        const updatedPostData = user.posts.filter(
+          (postItem) => postItem?._id !== selectedpost?.id
+        );
+        dispatch(setAllpost(updatedPostData));
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.messsage);
+    }
+  };
+
+  if (!userProfile || Object.keys(userProfile).length === 0) {
+    return <div>Failed to load user profile.</div>;
+  }
+
+  const savedHandler = async()=>{
+    try {
+      const res = await axios.get(`${backendurl}/api/v1/post/${selectedpost._id}/savepost`,{
+        withCredentials:true
+      })
+      if(res.data.success){
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <div className="flex flex-col items-center w-full h-screen flex-grow relative ">
@@ -171,13 +213,15 @@ const Profile = () => {
           <h2 className="font-semibold text-xl ">Intro</h2>
           <div className="flex flex-col items-center gap-2">
             <h3 className="mt-2">{userProfile?.username}</h3>
-           {
-            user._id === userProfile._id && (
-              <Button className='w-full' onClick={() => setOpen(!open)} variant="secondary">
-              Edit Profile
-            </Button>
-            )
-           }
+            {user?._id === userProfile._id && (
+              <Button
+                className="w-full"
+                onClick={() => setOpen(!open)}
+                variant="secondary"
+              >
+                Edit Profile
+              </Button>
+            )}
           </div>
           {userProfile && userProfile.gender && (
             <p className="mt-4"> Gender : {userProfile?.gender}</p>
@@ -246,7 +290,7 @@ const Profile = () => {
                                           top-14 bg-white shadow-md  w-2/3  border rounded-md z-20 gap-2 my-2 cursor-pointer"
                     >
                       <h2 className="mt-2">Post Options</h2>
-                      {post.author._id === user._id && (
+                      {post.author._id === user?._id && (
                         <h2
                           onClick={deletePostHandler}
                           className="flex items-center mr-1"
@@ -270,6 +314,15 @@ const Profile = () => {
                         </Avatar>{" "}
                         View Profile
                       </h2>
+
+                   {
+                    user._id === userProfile._id && 
+                    <h2 className="mb-2 flex items-center" onClick={savedHandler}>
+                    <IoBookmarkOutline className="mr-1"/>
+                    Remove from saved
+                       </h2>
+                   }
+
                     </div>
                   )}
                 </div>

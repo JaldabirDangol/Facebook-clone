@@ -9,8 +9,12 @@ import axios from "axios";
 import { backendurl } from "../../configurl";
 import { setUserProfile } from "../../store/authSlice";
 import { toast } from "sonner";
+import useGetUserProfile from "@/hooks/useGetUserProfile";
+import { useParams } from "react-router-dom";
 
 const EditProfile = ({ open, setOpen, userProfile }) => {
+  const params = useParams();
+  const userId = params.id;
   const dispatch = useDispatch();
   const { user } = useSelector((store) => store.auth);
   const [bio, setBio] = useState(userProfile?.bio || "");
@@ -78,9 +82,7 @@ const EditProfile = ({ open, setOpen, userProfile }) => {
       );
 
       if (res.data.success) {
-        dispatch(setUserProfile(res.data.user));
         toast.success(res.data.message)
-       
       }
     } catch (error) {
       console.error("Error updating profile:", error);

@@ -81,25 +81,6 @@ export const login = async (req, res) => {
     });
 
     //populate post
-    const populatedPosts = (await Promise.all(
-      user.posts.map(async (postId) => {
-          const post = await Post.findById(postId);
-          if (post && post.author.equals(user._id)) {
-              return post;
-          }
-          return null;
-      })
-  )).filter(post => post !== null); 
-
-    user = {
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      profilePicture: user.profilePicture,
-      bio: user.bio,
-      freinds: user.freinds,
-      posts: populatedPosts,
-    };
 
     return res
       .cookie("logincookie", token, {
@@ -109,7 +90,6 @@ export const login = async (req, res) => {
       })
       .json({
         message:`Welcome back ${user.username}`,
-        user,
         success: true,
       });
   } catch (error) {
@@ -128,6 +108,44 @@ export const logout = async (req, res) => {
   }
 };
 
+export const userDetail = async (req,res)=>{
+  try {
+    const userId = req.id;
+    const user = await User.findById(userId)
+
+    if(!user){
+      return res.status(400).json({
+        message:'user doesnot exists',
+        success:false
+    })
+    }
+    const populatedPosts = user?.posts?.length
+    ? (await Promise.all(
+        user.posts.map(async (postId) => {
+          const post = await Post.findById(postId);
+          return post && post.author.equals(user._id) ? post : null;
+        })
+      )).filter(post => post !== null)
+    : [];
+
+   
+  return res.status(200).json({
+  message: 'User data fetched successfully',
+  success: true,
+  user: {
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+    profilePicture: user.profilePicture,
+    bio: user.bio,
+    friends: user.freinds, 
+    posts: populatedPosts,
+  }
+});
+  } catch (error) {
+    console.log(error)
+  }
+}
 export const getProfile = async (req, res) => {
   try {
     const myId = req.id;
@@ -240,7 +258,8 @@ export const editProfile = async(req,res)=>{
     try {
     const userId = req.id;
     const user = await User.findById(userId);
-    const { bio , gender , oldPassword ,newPassword } = req.body;
+    const { bio , gender , oldPassword } = req.body;
+    let { newPassword } = req.body;
     const profilePhoto = req.files?.profilePhoto?.[0]; 
     const coverPhoto = req.files?.coverPhoto?.[0]; 
     
@@ -270,12 +289,13 @@ export const editProfile = async(req,res)=>{
         })
       }
       else{
+        newPassword = await bcrypt.hash(newPassword, 10)
         user.password = newPassword
       }
     }
 
     await user.save();
-    const updatedUser = await User.findById(user._id).select("-password");
+    const updatedUser = await User.findById(user._id).select("-password")
     return res.status(200).json({
     message: "Profile updated successfully!",
     success: true,
