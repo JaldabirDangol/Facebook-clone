@@ -19,7 +19,7 @@ const CreatePost = () => {
         <input
           onClick={() => setOpen(true)}
           type="text"
-          placeholder="What's on your mind, Kiran?"
+          placeholder={`What's on your mind ,  ${user?.username}?`}
           className="flex-grow bg-gray-100 rounded-full px-4 py-2 text-sm outline-none"
         />
       </div>

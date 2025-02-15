@@ -12,8 +12,13 @@ const postSlice =  createSlice({
         },
         setSelectedPost:(state,action)=>{
             state.selectedpost = action.payload
+        },
+        setChangeSaved:(state,action)=>{
+            if (state.selectedpost) {
+                state.selectedpost.saved = action.payload;
+            }
         }
     }
 })
-export const { setAllpost ,setSelectedPost} = postSlice.actions;
+export const { setAllpost ,setSelectedPost , setChangeSaved} = postSlice.actions;
 export default postSlice.reducer;

@@ -9,7 +9,7 @@ import { Button } from "./ui/button";
 import { IoBookmarkOutline } from "react-icons/io5";
 import { Camera, MoreHorizontal } from "lucide-react";
 import Post from "./Post";
-import { setAllpost, setSelectedPost } from "../../store/postSlice";
+import { setAllpost, setChangeSaved, setSelectedPost } from "../../store/postSlice";
 import EditProfile from "./EditProfile";
 import CreatePost from "./CreatePost";
 import axios from "axios";
@@ -120,6 +120,7 @@ const Profile = () => {
       })
       if(res.data.success){
         toast.success(res.data.message);
+          dispatch(setChangeSaved(res.data.savedPost))
       }
     } catch (error) {
       console.log(error)

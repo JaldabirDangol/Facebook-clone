@@ -371,7 +371,7 @@ export const sharePost = async(req,res)=>{
     try {
         const userId = req.id;
         const postId = req.params.id;
-        const {caption } = req.body;
+        const { caption ,visibility } = req.body;
         let user = await User.findById(userId);
         const post = await Post.findById(postId);
 
@@ -386,7 +386,7 @@ export const sharePost = async(req,res)=>{
             author:userId,
             issharedpost:postId,
             caption:caption || '',
-            image:post.image
+            visibility:visibility
         })
 
         await user.updateOne({ $addToSet:{posts:newShared._id} })
@@ -395,6 +395,7 @@ export const sharePost = async(req,res)=>{
         return res.status(200).json({
             message:'Post shared successfully!!',
             success:true,
+            sharedpost:newShared
         })
         
     } catch (error) {

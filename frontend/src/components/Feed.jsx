@@ -7,11 +7,11 @@ import Post from './Post';
 const Feed = () => {
   const { posts } = useSelector(store => store.post)
   return (
-   <div className='w-1/2 '>
+   <div className='w-full  '>
         <CreatePost/>
     <div>
       {posts.length > 0 ? (
-        posts.map((post) => <Post key={post._id} post={post} />)
+        posts.map((post) => <Post key={post?._id} post={post} />)
       ) : (
         <p>No posts available</p>
       )}

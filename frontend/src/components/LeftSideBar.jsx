@@ -81,7 +81,7 @@ const logOutHandler = async () => {
     }
   };
   return (
-    <div className="bg-gray-100 w-[25%]  sticky left-0 flex flex-col z-40 top-18  max-h-screen
+    <div className="bg-gray-100 w-full flex flex-col   max-h-screen
      overflow-y-auto ">
       {
         sidebarItems.map((item,index)=>{

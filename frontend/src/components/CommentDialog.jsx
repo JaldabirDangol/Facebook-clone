@@ -14,12 +14,12 @@ import { setAllpost } from '../../store/postSlice'
 const CommentDialog = ({ open, setOpen }) => {
   const [text, setText] = useState("");
   const { selectedpost, posts } = useSelector(store => store.post);
-  const [comment, setComment] = useState([]);
+  const [comment, setComment] = useState(selectedpost?.comment || [])
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (selectedpost) {
-      setComment(selectedpost.comments);
+      setComment(selectedpost.comment);
     }
   }, [selectedpost]);
 
@@ -40,11 +40,12 @@ const CommentDialog = ({ open, setOpen }) => {
             withCredentials: true
         });
         if (res.data.success) {
-          const updatedCommentData = [...comment, res.data.comment];
+          
+          const updatedCommentData = [...comment , res.data.comment];
           setComment(updatedCommentData);
 
           const updatedPostData = posts.map(p =>
-              p._id === selectedpost._id ? { ...p, comments: updatedCommentData } : p
+              p._id === selectedpost._id ? { ...p, comment: updatedCommentData } : p
           );
 
           dispatch(setAllpost(updatedPostData));

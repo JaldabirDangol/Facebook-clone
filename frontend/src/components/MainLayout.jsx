@@ -29,14 +29,28 @@ const MainLayout = () => {
     fetchUserData();
   }, [dispatch])
   return (
-    <div className="w-screen h-screen">
+    <div className="w-screen h-screen flex flex-col">
+    {/* Navbar (Sticky) */}
+    <div className="sticky top-0 z-50 w-full">
       <Navbar />
-      <div className="flex justify-between ">
-        <LeftSideBar />
-          <Outlet />
-        <RightSideBar />
+    </div>
+  
+    <div className="flex flex-grow overflow-hidden">
+      <div className="bg-gray-100 w-[25%] h-screen sticky top-16 overflow-y-auto">
+        <LeftSideBar /> 
+      </div>
+  
+      <div className="flex-grow h-screen overflow-y-auto scrollbar-none">
+        <Outlet />
+      </div>
+  
+      <div className="bg-gray-100 w-[25%] h-screen sticky top-16 overflow-y-auto">
+        <RightSideBar /> 
       </div>
     </div>
+  </div>
+  
+  
   );
 };
 

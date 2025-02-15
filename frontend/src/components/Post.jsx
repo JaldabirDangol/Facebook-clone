@@ -12,6 +12,7 @@ import { backendurl } from '../../configurl'
 import { setAllpost, setSelectedPost } from '../../store/postSlice'
 import CommentDialog from './CommentDialog'
 import { useNavigate } from 'react-router-dom';
+import ShareDialog from './ShareDialog';
 const reactions = [
     { name: 'like', icon: <FaThumbsUp className="text-blue-500 h-5 w-5" /> },
     { name: 'love', icon: <FaHeart className="text-red-500 h-5 w-5" /> },
@@ -23,11 +24,12 @@ const reactions = [
 const Post = ({ post }) => {
     const [text, setText] = useState("");
     const [open, setOpen] = useState(false);
+    const [openShare , setOpenShare] = useState(false)
     const { user } = useSelector(store => store.auth);
     const { posts ,  selectedpost } = useSelector(store => store.post);
-    const [postReactCount, setPostReactCount] = useState(post.reaction && post?.reaction?.length);
+    const [postReactCount, setPostReactCount] = useState(post?.reaction && post?.reaction?.length);
     const [selectedReaction, setSelectedReaction] = useState(null);  
-    const [comment, setComment] = useState(post.comments);
+    const [comment, setComment] = useState(post?.comment);
     const [threeDot, setThreeDot] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate(); 
@@ -125,7 +127,7 @@ const Post = ({ post }) => {
     }
  if (!post.issharedpost) {
         return (
-            <Card className="my-10 max-w-2xl  w-2/3 relative  mx-auto border shadow-sm rounded-lg overflow-hidden">
+            <Card className="my-10 max-w-2xl  w-2/3 relative max-h-xl  mx-auto border shadow-sm rounded-lg overflow-hidden">
                 {/* Post Header */}
                 <div className="flex items-center justify-between pt-3 pl-3 pr-3 ">
                     <div className="flex items-center gap-3">
@@ -169,7 +171,7 @@ const Post = ({ post }) => {
                 )
             }
                 {post.caption && <p className="p-3 text-sm text-gray-800">{post.caption}</p>}
-                {post.image && <img className="w-full border" src={post.image} alt="post_img"  onError={(e) => e.target.style.display = 'none'}/>}
+                {post.image && <img className="w-full border max-h-[650px] object-cover" src={post.image} alt="post_img"  onError={(e) => e.target.style.display = 'none'}/>}
 
                 {/* Engagement Counts */}
                 <div className="flex justify-between items-center text-gray-600 text-sm mt-1 mb-1 px-2">
@@ -211,17 +213,22 @@ const Post = ({ post }) => {
                     </div>
 
                     {/* Comment Button */}
-                    <div onClick={() => setOpen(true)} className="flex justify-center items-center gap-2 cursor-pointer w-1/3 h-full border-r hover:bg-gray-100">
+                    <div onClick={() => {setOpen(true) 
+                        dispatch(setSelectedPost(post))
+                    }} className="flex justify-center items-center gap-2 cursor-pointer w-1/3 h-full border-r hover:bg-gray-100">
                         <FaRegComment />
                         <span>Comment</span>
                     </div>
 
                     {/* Share Button */}
-                    <div className="flex items-center justify-center gap-2 cursor-pointer w-1/3 h-full hover:bg-gray-100">
+                <div onClick={()=>{setOpenShare(true) 
+                    dispatch(setSelectedPost(post))
+                }} className="flex items-center justify-center gap-2 cursor-pointer w-1/3 h-full hover:bg-gray-100">
                         <FaShare />
                         <span>Share</span>
                     </div>
                 </div>
+                <ShareDialog openShare={openShare} setOpenShare={setOpenShare}/>
                 <CommentDialog open={open} setOpen={setOpen} />
             </Card>
         );
@@ -274,7 +281,7 @@ const Post = ({ post }) => {
 
             {post.caption && <p className="p-3 text-sm text-gray-800">{post.caption}</p>}
             <div className='border rounded-xl m-3'>
-                {post.issharedpost.image && <img className="w-full rounded-t-xl border" src={post.issharedpost.image} alt="post_img" />}
+                {post.issharedpost.image && <img className="w-full rounded-t-xl border max-h-[700px] object-cover" src={post.issharedpost.image} alt="post_img" />}
                 {post?.issharedpost?.author?.username && <div className="flex items-center gap-3 mt-2 ml-2">
                     <Avatar>
                         <AvatarImage src={post.issharedpost.author?.profilePicture} alt="profile_image" />
@@ -336,11 +343,14 @@ const Post = ({ post }) => {
                 </div>
 
                 {/* Share Button */}
-                <div className="flex items-center justify-center gap-2 cursor-pointer w-1/3 h-full hover:bg-gray-100">
-                    <FaShare />
-                    <span>Share</span>
+                <div onClick={()=>{setOpenShare(true) 
+                    dispatch(setSelectedPost(post))
+                }} className="flex items-center justify-center gap-2 cursor-pointer w-1/3 h-full hover:bg-gray-100">
+                        <FaShare />
+                        <span>Share</span>
+                    </div>
                 </div>
-            </div>
+                <ShareDialog openShare={openShare} setOpenShare={setOpenShare}/>
             <CommentDialog open={open} setOpen={setOpen} />
         </Card>
 
