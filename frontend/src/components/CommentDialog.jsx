@@ -56,6 +56,9 @@ const CommentDialog = ({ open, setOpen }) => {
       console.log(error);
   }
 }
+
+if(!selectedpost?.issharedpost){
+
   return (
     <div>
       <Dialog open={open}>
@@ -114,6 +117,70 @@ const CommentDialog = ({ open, setOpen }) => {
       </Dialog>
     </div>
   )
+}else{
+  return (
+    <div>
+      <Dialog open={open}>
+        <DialogContent onInteractOutside={() => setOpen(false)} className="max-w-5xl p-0 flex flex-col">
+          <div className='flex flex-1'>
+            <div className='w-1/2'>
+              <img
+                className='rounded-lg w-full aspect-square object-cover'
+                src={selectedpost.issharedpost?.image}
+                alt="post_img"
+              />
+            </div>
+
+            <div className='w-1/2 flex flex-col justify-between'>
+              <div className='flex items-center justify-between p-4'>
+                <div className='flex gap-3 items-center'>
+                  <Link>
+                    <Avatar>
+                      <AvatarImage src={selectedpost?.author?.profilePicture} />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                  </Link>
+                  <div>
+                    <Link className='font-semibold text-xs'>{selectedpost?.author?.username}</Link>
+                    {/* <span className='text-gray-600 text-sm'>Bio here...</span> */}
+                  </div>
+                </div>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <MoreHorizontal className='cursor-pointer' />
+                  </DialogTrigger>
+                  <DialogContent className="flex flex-col items-center text-sm text-center">
+                    <div className='cursor-pointer w-full text-[#ED4956] font-bold'>
+                      Unfollow
+                    </div>
+                    <div className='cursor-pointer w-full'>
+                      Add to favorites
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+              <div className='flex-1 overflow-y-auto max-h-96 p-4'>
+                {
+                 comment && comment.map((comment)=><Comment key={comment._id} comment={comment}/>)
+                }
+              </div>
+              <div className='p-4'>
+                <div className='flex items-center gap-2'>
+                  <input type="text" value={text} onChange={changeEventHandler} placeholder='Add a comment...' className='w-full outline-none border text-sm border-gray-300 p-2 rounded' />
+                  <Button disabled={!text.trim()} onClick={sendMessageHandler} variant="outline">Send</Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}
+
+
+
+
 }
 
 export default CommentDialog

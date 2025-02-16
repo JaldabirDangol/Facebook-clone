@@ -28,7 +28,7 @@ const ShareDialog = ({ openShare, setOpenShare }) => {
                 );
 
                 if (res.data.success) {
-                    dispatch(setAllpost([...posts, res.data.sharedPost]));
+                    dispatch(setAllpost([...posts, res.data.sharedpost]));
                     toast.success("Post shared successfully!");
                     setOpenShare(false);
                 }
@@ -40,7 +40,7 @@ const ShareDialog = ({ openShare, setOpenShare }) => {
                 );
 
                 if (res.data.success) {
-                    dispatch(setAllpost([...posts, res.data.sharedPost]));
+                    dispatch(setAllpost([...posts, res.data.sharedpost]));
                     toast.success("Post shared successfully!");
                     setOpenShare(false);
                 }

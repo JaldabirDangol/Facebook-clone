@@ -13,6 +13,7 @@ import { setAllpost, setSelectedPost } from '../../store/postSlice'
 import CommentDialog from './CommentDialog'
 import { useNavigate } from 'react-router-dom';
 import ShareDialog from './ShareDialog';
+
 const reactions = [
     { name: 'like', icon: <FaThumbsUp className="text-blue-500 h-5 w-5" /> },
     { name: 'love', icon: <FaHeart className="text-red-500 h-5 w-5" /> },
@@ -22,31 +23,24 @@ const reactions = [
     { name: 'angry', icon: <FaAngry className="text-red-500 h-5 w-5" /> }
 ];
 const Post = ({ post }) => {
-    const [text, setText] = useState("");
     const [open, setOpen] = useState(false);
     const [openShare , setOpenShare] = useState(false)
     const { user } = useSelector(store => store.auth);
     const { posts ,  selectedpost } = useSelector(store => store.post);
     const [postReactCount, setPostReactCount] = useState(post?.reaction && post?.reaction?.length);
     const [selectedReaction, setSelectedReaction] = useState(null);  
-    const [comment, setComment] = useState(post?.comment);
     const [threeDot, setThreeDot] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate(); 
-    const handleInputChange = (e) => {
-        setText(e.target.value.trim() ? e.target.value : "");
-    };
+
     const toggleReactionHandler = async (reactionType) => {
         try {
-            // Check if user already reacted
             const existingReaction = post.reaction.find(r => r.author === user._id);
-
             const res = await axios.post(
                 `${backendurl}/api/v1/post/${post._id}/reaction`,
                 { Rtype: reactionType.name },
                 { withCredentials: true }
             );
-
            
             if (res.data.success) {
                 setSelectedReaction(
@@ -54,7 +48,6 @@ const Post = ({ post }) => {
                         ? null
                         : reactionType
                 );
-
                 // Adjust reaction count
                 if (existingReaction && existingReaction.reaction === reactionType.name) {
                     setPostReactCount(postReactCount - 1);
@@ -76,31 +69,7 @@ const Post = ({ post }) => {
             toast.error(error?.response?.data?.message );
         }
     };
-    const commentHandler = async () => {
-        try {
-            const res = await axios.post(`${backendurl}/api/v1/post/${post._id}/comment`, { text }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                withCredentials: true
-            });
-            console.log(res.data);
-            if (res.data.success) {
-                const updatedCommentData = [...comment, res.data.comment];
-                setComment(updatedCommentData);
-
-                const updatedPostData = posts.map(p =>
-                    p._id === post._id ? { ...p, comments: updatedCommentData } : p
-                );
-
-                dispatch(setAllpost(updatedPostData));
-                toast.success(res.data.message);
-                setText("");
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
+ 
     const deletePostHandler = async () => {
         try {
             const res = await axios.delete(`${backendurl}/api/v1/post/delete/${selectedpost._id}`, { withCredentials: true })
@@ -125,21 +94,20 @@ const Post = ({ post }) => {
             toast.error(error.response.data.message)
         }
     }
- if (!post.issharedpost) {
+ if (!post?.issharedpost) {
         return (
             <Card className="my-10 max-w-2xl  w-2/3 relative max-h-xl  mx-auto border shadow-sm rounded-lg overflow-hidden">
                 {/* Post Header */}
                 <div className="flex items-center justify-between pt-3 pl-3 pr-3 ">
                     <div className="flex items-center gap-3">
                         <Avatar>
-                            <AvatarImage src={post.author?.profilePicture} alt="profile_image" />
+                            <AvatarImage src={post?.author?.profilePicture} alt="profile_image" />
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col">
                             <h1 className="font-semibold flex items-center gap-1">
-                                {post.author?.username}
+                                {post?.author?.username}
                             </h1>
-                            <span className="text-gray-500 text-sm">{post.time}</span>
                         </div>
                     </div>
                     <MoreHorizontal onClick={()=>{setThreeDot(!threeDot)
@@ -170,8 +138,8 @@ const Post = ({ post }) => {
                     </div>
                 )
             }
-                {post.caption && <p className="p-3 text-sm text-gray-800">{post.caption}</p>}
-                {post.image && <img className="w-full border max-h-[650px] object-cover" src={post.image} alt="post_img"  onError={(e) => e.target.style.display = 'none'}/>}
+                {post?.caption && <p className="p-3 text-sm text-gray-800">{post.caption}</p>}
+                {post?.image && <img className="w-full border max-h-[650px] object-cover" src={post.image} alt="post_img"  onError={(e) => e.target.style.display = 'none'}/>}
 
                 {/* Engagement Counts */}
                 <div className="flex justify-between items-center text-gray-600 text-sm mt-1 mb-1 px-2">
@@ -235,7 +203,7 @@ const Post = ({ post }) => {
     }
     else {
     return (
-        post.issharedpost && 
+        post?.issharedpost && 
         <Card className="my-10  relative max-w-2xl  w-2/3 mx-auto border shadow-sm rounded-lg overflow-hidden">
             {/* Post Header */}
             <div className="flex items-center justify-between pt-3 pl-3 pr-3">

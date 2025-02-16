@@ -4,18 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import blankprofilepic from "../assets/blankprofilepic.png";
 import blankcoverpic from "../assets/blankcoverpic.png";
 import { Button } from "./ui/button";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import { backendurl } from "../../configurl";
-import { setUserProfile } from "../../store/authSlice";
 import { toast } from "sonner";
-import useGetUserProfile from "@/hooks/useGetUserProfile";
-import { useParams } from "react-router-dom";
 
 const EditProfile = ({ open, setOpen, userProfile }) => {
-  const params = useParams();
-  const userId = params.id;
-  const dispatch = useDispatch();
   const { user } = useSelector((store) => store.auth);
   const [bio, setBio] = useState(userProfile?.bio || "");
   const [gender, setGender] = useState(userProfile?.gender || "");

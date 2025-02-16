@@ -27,7 +27,7 @@ const Friends = () => {
   
 
   return (
-    <div className="w-1/2 flex flex-col ">
+    <div className="w-full flex flex-col mx-auto">
     {friends.length === 0 ? (
       <p className="text-gray-500">No suggested friends available.</p>
     ) : (

@@ -76,7 +76,7 @@ const Profile = () => {
         dispatch(setAuthUser(res.data.user));
         dispatch(setUserProfile(res.data.targetUser));
 
-        // setIsFriend(res.data.user.freinds.includes(userId));
+
         setIsFriend(!isFriend);
         toast.success(res.data.message);
       }
@@ -177,13 +177,8 @@ const Profile = () => {
               Edit Profile
             </Button>
           ) : (
-            <Button
-              onClick={friendReqHandler}
-              className={
-                isFriend ? "bg-gray-500 text-white" : "bg-blue-500 text-white"
-              }
-            >
-              {isFriend ? "Remove Friend" : "Send Friend"}
+            <Button onClick={friendReqHandler}  className={  isFriend ? "bg-gray-500 text-white" : "bg-blue-500 text-white" }>
+              { isFriend ? "Remove Friend" : "Send Friend"}
             </Button>
           )}
         </div>
@@ -228,7 +223,7 @@ const Profile = () => {
             <p className="mt-4"> Gender : {userProfile?.gender}</p>
           )}
 
-          {user?.bio && (
+          {userProfile?.bio && (
             <div className="mt-2">
               <span className="font-medium">Bio:</span>{" "}
               <p className="text-gray-700">{userProfile?.bio}</p>
@@ -370,7 +365,7 @@ const Profile = () => {
                         alt={friend?.username}
                       />
                       <AvatarFallback>
-                        {friend.username.charAt(0)}
+                        {friend?.username.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                   </div>

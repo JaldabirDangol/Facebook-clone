@@ -389,13 +389,26 @@ export const sharePost = async(req,res)=>{
             visibility:visibility
         })
 
+        const newpost = await Post.findById(newShared._id).populate([{
+            path: "author",
+            select: "username profilePicture",
+
+        },
+        {
+            path: "issharedpost",
+            populate: {
+                path: "author",
+                select: "username profilePicture caption image"
+            }
+        }
+    ] )
         await user.updateOne({ $addToSet:{posts:newShared._id} })
         await user.save()
 
         return res.status(200).json({
             message:'Post shared successfully!!',
             success:true,
-            sharedpost:newShared
+            sharedpost:newpost
         })
         
     } catch (error) {
