@@ -43,6 +43,7 @@ const Post = ({ post }) => {
             );
            
             if (res.data.success) {
+
                 setSelectedReaction(
                     existingReaction && existingReaction.reaction === reactionType.name
                         ? null

@@ -6,9 +6,9 @@ import connectDB from './utils/db.js'
 import userRoutes from './routes/user.routes.js'
 import postRoutes from './routes/post.route.js'
 import messageRoutes from './routes/message.route.js'
+import { server ,app } from './socket/socket.js'
 
-dotenv.config()
-const app = express();
+dotenv.config({})
 const PORT = process.env.PORT || 3767;
 app.use(express.json());
 app.use(cookieParser());
@@ -29,7 +29,7 @@ app.get('/',(req,res)=>{
 })
 
 
-app.listen(PORT,()=>{
+server.listen(PORT,()=>{
     connectDB();
     console.log(`app is listening on ${PORT}`)
 })

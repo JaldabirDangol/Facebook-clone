@@ -12,9 +12,11 @@ import { useNavigate } from "react-router-dom";
 import { backendurl } from "../../configurl";
 import { toast } from "sonner";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setAuthUser } from "../../store/authSlice";
 const LeftSideBar = () => {
     const navigate = useNavigate(); 
+    const dispatch = useDispatch()
     const {user} = useSelector(store => store.auth)
     const sidebarItems = [
     {
@@ -71,7 +73,7 @@ const logOutHandler = async () => {
         withCredentials: true,
       });
       if (res.data.success) {
-        // dispatch(setAuthUser(null));
+        dispatch(setAuthUser(null));
         toast.success(res.data.message);
         navigate("/login");
       }
