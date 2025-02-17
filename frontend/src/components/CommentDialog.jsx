@@ -39,7 +39,7 @@ const CommentDialog = ({ open, setOpen }) => {
             },
             withCredentials: true
         });
-        if (res.data.success) {
+        if (res.data.success) { 
           
           const updatedCommentData = [...comment , res.data.comment];
           setComment(updatedCommentData);
@@ -177,10 +177,6 @@ if(!selectedpost?.issharedpost){
     </div>
   )
 }
-
-
-
-
 }
 
 export default CommentDialog

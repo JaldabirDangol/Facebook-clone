@@ -21,14 +21,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { setNotification } from "../../store/rtnSlice";
 
 export const Navbar = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchBox, setSearchBox] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const { user } = useSelector((store) => store.auth);
-  const  { notification } = useSelector((store) => store.rtn);
-  console.log(notification.length)
+  const { notification } = useSelector((store) => store.rtn);
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -41,9 +40,9 @@ export const Navbar = () => {
     return () => clearTimeout(delay);
   }, [searchBox]);
 
-  const clearNotificationHandler = ()=>{
-    dispatch(setNotification({reaction:"clear"}))
-  }
+  const clearNotificationHandler = () => {
+    dispatch(setNotification({ reaction: "clear" }));
+  };
   const navbarHandler = (name) => {
     if (name === "home") {
       navigate("/");
@@ -173,17 +172,17 @@ export const Navbar = () => {
           {notification?.length > 0 && (
             <Popover>
               <PopoverTrigger asChild>
-                <Button
-                  className="rounded-full h-5 w-5 bg-red-600 hover:bg-red-600 absolute bottom-6 ">
+                <Button className="rounded-full h-5 w-5 bg-red-600 hover:bg-red-600 absolute bottom-6 ">
                   {notification?.length}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent onInteractOutside = {clearNotificationHandler}>
+              <PopoverContent onInteractOutside={clearNotificationHandler}>
                 <div>
                   {notification?.length === 0 ? (
                     <p>No new notification</p>
                   ) : (
-                 notification &&   notification.map((notification) => {
+                    notification &&
+                    notification.map((notification) => {
                       return (
                         <div
                           key={notification._id}
@@ -199,23 +198,31 @@ export const Navbar = () => {
                             <span className="font-bold">
                               {notification.author?.username}
                             </span>{" "}
+                            {notification.reaction === "like" && (
+                              <span>react like on your post</span>
+                            )}
+                            {notification.reaction === "love" && (
+                              <span>react love on your post</span>
+                            )}
+                            {notification.reaction === "wow" && (
+                              <span>react wow on your post</span>
+                            )}
+                            {notification.reaction === "sad" && (
+                              <span>react sad on your post</span>
+                            )}
+                            {notification.reaction === "angry" && (
+                              <span>react angry on your post</span>
+                            )}
+                            {notification.reaction === "haha" && (
+                              <span>react haha on your post</span>
+                            )}
+                            {notification?.text && (
+                              <span>comment  on your post</span>
+                            )}
                             {
-                              notification.reaction === 'like' && (<span>react like on your post</span>)
-                            }
-                              {
-                              notification.reaction === 'love' && (<span>react love on your post</span>)
-                            }
-                              {
-                              notification.reaction === 'wow' && (<span>react wow on your post</span>)
-                            }
-                              {
-                              notification.reaction === 'sad' && (<span>react sad on your post</span>)
-                            }
-                              {
-                              notification.reaction === 'angry' && (<span>react angry on your post</span>)
-                            }
-                              {
-                              notification.reaction === 'haha' && (<span>react haha on your post</span>)
+                              notification?.issharedpost && (
+                                <span>share your post</span>
+                              )
                             }
                           </p>
                         </div>

@@ -138,7 +138,7 @@ export const userDetail = async (req,res)=>{
     email: user.email,
     profilePicture: user.profilePicture,
     bio: user.bio,
-    friends: user.freinds, 
+    freinds: user.freinds, 
     posts: populatedPosts,
   }
 });
@@ -718,10 +718,10 @@ export const getFriends = async(req,res)=>{
         success:false
       })
     }
-  
     return res.status(200).json({
       message:'Friends found ',
-      user
+      friends:user.freinds,
+      success:true
     })
  } catch (error) {
   console.log(error)

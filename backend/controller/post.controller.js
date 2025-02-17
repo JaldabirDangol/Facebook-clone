@@ -130,7 +130,6 @@ export const postReaction = async (req, res) => {
         success: false,
       });
     }
-
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({
@@ -145,11 +144,21 @@ export const postReaction = async (req, res) => {
 
     if (existingReaction) {
       if (existingReaction.reaction === Rtype) {
-        await existingReaction.deleteOne();
+      
         await Post.updateOne(
-          { _id: postId },
-          { $pull: { reaction: existingReaction._id } }
-        );
+            { _id: postId },
+            { $pull: { reaction: existingReaction._id } }
+          );
+          const exId = existingReaction._id;
+        await existingReaction.deleteOne();
+       
+        const postOwnerSocketId = post.author !== userId ? getReceiverSocketId(post.author) : null;
+        if (postOwnerSocketId) io.to(postOwnerSocketId).emit("notification", {
+            exId,
+            postId,
+            userId,
+            removed:true
+        });
 
         return res.status(200).json({
           message: "Reaction removed!",
@@ -165,7 +174,6 @@ export const postReaction = async (req, res) => {
         await existingReaction.save();
 
         const postOwnerId = post.author.toString();
-
         if (postOwnerId !== userId) {
           const postOwnerSocketId = getReceiverSocketId(postOwnerId);
           io.to(postOwnerSocketId).emit("notification", existingReaction);
@@ -242,6 +250,9 @@ export const addComment = async (req, res) => {
 
     post.comment.push(comment._id);
     await post.save();
+
+    const postOwnerSocketId = post.author !== userId ? getReceiverSocketId(post.author) : null
+    io.to(postOwnerSocketId).emit('notification',comment)
 
     return res.status(200).json({
       message: "Comment is created successfully",
@@ -428,6 +439,9 @@ export const sharePost = async (req, res) => {
     ]);
     await user.updateOne({ $addToSet: { posts: newShared._id } });
     await user.save();
+
+    const postOwnerSocketId = userId !== post.author ? getReceiverSocketId(post.author) : null
+    io.to(postOwnerSocketId).emit('notification',newpost)
 
     return res.status(200).json({
       message: "Post shared successfully!!",

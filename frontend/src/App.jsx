@@ -13,12 +13,14 @@ import {  setNotification } from '../store/rtnSlice'
 import './App.css'
 import { backendurl } from '../configurl'
 import { setSocket } from '../store/socketSlice'
+import SuggestedUserList from './components/SuggestedUserList'
 const browserRouter = createBrowserRouter([
   {
     path: '/',
     element: <MainLayout />,
     children: [
-      { path: '/friends', element: <Friends /> },
+      { path: '/suggesteduser', element:<SuggestedUserList/> },
+      { path: 'friends' , element:<Friends/>},
       { path: '/', element: <Home /> }
     ]
   },
@@ -41,7 +43,6 @@ function App() {
       });
       dispatch(setSocket(socketio));
 
-      // listen all the events
       socketio.on('getOnlineUsers', (onlineUsers) => {
         dispatch(setOnlineUsers(onlineUsers));
       });

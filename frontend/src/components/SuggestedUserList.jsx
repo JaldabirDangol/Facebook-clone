@@ -1,20 +1,37 @@
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { backendurl } from "../../configurl";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import useGetMyFriends from "@/hooks/usegetMyFriends";
 
 
-const Friends = () => {
+const SuggestedUserList = () => {
+  const [friends, setFriends] = useState([]);
   const navigate = useNavigate();
-  useGetMyFriends()
-  const { userFriend }= useSelector(store => store.auth)
+  useEffect(() => {
+    const fetchSuggestedUsers = async () => {
+      try {
+        const res = await axios.get(`${backendurl}/api/v1/user/suggesteduser`, {
+          withCredentials: true,
+        });
+        if (res.data.success) {
+          setFriends(res.data.users);
+        }
+      } catch (error) {
+        console.error("Error fetching suggested users:", error);
+      }
+    };
+  
+    fetchSuggestedUsers();
+  }, []); 
+  
 
   return (
     <div className="w-full flex flex-col mx-auto">
-    {userFriend?.length === 0 ? (
-      <p className="text-gray-500">You donot have any freind </p>
+    {friends.length === 0 ? (
+      <p className="text-gray-500">No suggested friends available.</p>
     ) : (
-    userFriend &&  userFriend.map((user) => (
+      friends.map((user) => (
         <div
           className="hover:bg-gray-100 cursor-pointer flex items-center justify-between gap-4 p-4"
           key={user._id}
@@ -35,4 +52,4 @@ const Friends = () => {
 );
 };
 
-export default Friends;
+export default SuggestedUserList;
