@@ -9,6 +9,7 @@ import { FaFacebookMessenger } from "react-icons/fa";
 import { IoNotifications } from "react-icons/io5";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { IoGameControllerOutline } from "react-icons/io5";
+import { MdDelete } from "react-icons/md";
 import { Input } from "./ui/input";
 import { CiShop } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
@@ -26,12 +27,15 @@ import { HelpCircle, LogOut, Settings } from "lucide-react";
 export const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [searchBox, setSearchBox] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const { user } = useSelector((store) => store.auth);
   const { notification } = useSelector((store) => store.rtn);
   const [openProfile ,setOpenProfile] = useState(false)
+  const [settingOpen,setSettingOpen] = useState(false)
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -97,6 +101,42 @@ export const Navbar = () => {
       console.log(error);
     }
   };
+
+  const passwordHandler = async()=>{
+    try {
+      const res = await axios.post(`${backendurl}/api/v1/user/changepassword`,{
+        oldPassword,newPassword
+      },
+        {
+          withCredentials:true
+        }
+      )
+
+      if(res.data.success){
+        toast.success(res.data.message)
+        setOldPassword("");
+        setNewPassword("")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const deleteAccountHandler = async()=>{
+    try {
+      const res = await axios.delete(`${backendurl}/api/v1/user/deleteaccount`,{
+        withCredentials:true
+      })
+
+      if (res.data.success){
+        toast.success(res.data.message);
+        dispatch(setAuthUser(null))
+        navigate('/signup')
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <div className=" w-screen border rounded-lg bg-white flex items-center justify-between sticky top-0 z-50">
       <div className="flex items-center justify-start ml-4 gap-2">
@@ -255,11 +295,7 @@ export const Navbar = () => {
           )}
         </div>
         <div>
-          {/* <Avatar className="w-7 h-7">
-            <AvatarImage src={user?.profilePicture} />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar> */}
-
+          
           <Popover>
               <PopoverTrigger asChild>
                    <Avatar onClick={()=>setOpenProfile(true)} className="w-7 h-7">
@@ -286,11 +322,41 @@ export const Navbar = () => {
               <span>Help & support</span>
               </div>
 
-              <div className="flex items-center gap-2 mt-2">
-              <Settings  size={24} color="#422e2e"/>
+              <div onClick={()=>setSettingOpen(!settingOpen)} className="flex items-center gap-2 mt-2">
+              <Settings   size={24} color="#422e2e"/>
               <span>Settings & privacy</span>
               </div>
 
+     {
+      settingOpen && (
+        <div className="flex flex-col mt-2">
+                  <div onClick={deleteAccountHandler} className="flex items-center ">
+                  <MdDelete  size={24}/>
+                  <span className="ml-2">Delete account</span>
+                  </div>
+                <div>
+                <div className="font-semibold text-lg mt-2">
+            Change Password (Optional)
+            <input
+              type="password"
+              placeholder="Old Password"
+              className="border rounded-md p-1 h-[30px] text-sm w-full mt-2"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="New Password"
+              className="border rounded-md p-1 h-[30px] text-sm w-full mt-2"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <Button className='mt-2' onClick={passwordHandler}>Change Password</Button>
+          </div>
+                </div>
+        </div>
+      )
+     }
               <div onClick={logOutHandler} className="flex items-center gap-2 mt-2">
               <LogOut  size={24} color="#422e2e"/>
               <span>Logout</span>

@@ -8,6 +8,7 @@ import getDataUri from '../utils/datauri.js'
 import { Conversation } from "../model/conversation.model.js";
 import { Message } from "../model/message.model.js";
 import { Reaction } from "../model/reaction.model.js";
+import { Comment } from "../model/comment.model.js";
 dotenv.config();
 
 export const signup = async (req, res) => {
@@ -569,11 +570,11 @@ export const deleteAccount = async(req,res)=>{
         if(user){
           await Promise.all([
             Post.deleteMany({author:userId}),
-            Message.deleteMany({ $or: [{ senderId: userId }, { receiverId: userId }]})]),
+            Message.deleteMany({ $or: [{ senderId: userId }, { receiverId: userId }]}),
             Conversation.deleteMany({participants:{$in:[userId]}}),
             Comment.deleteMany({author:userId}),
             Reaction.deleteMany({author:userId}),
-            User.findByIdAndDelete(userId)
+            User.findByIdAndDelete(userId)])
         }
 
         const stillExists = await User.findById(userId);
@@ -739,5 +740,49 @@ export const getAllUsers = async(req,res)=>{
         })
   } catch (error) {
       console.log();
+  }
+}
+
+export const changePassword = async(req,res)=>{
+  try {
+    const userId = req.id;
+    const user = await User.findById(userId);
+    const {oldPassword} = req.body;
+    let {newPassword} = req.body
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    if(!oldPassword || !newPassword ){
+      return res.status(400).json({
+        message:'something is missing ',
+        success:false
+      })
+    }
+
+    if(oldPassword && newPassword){
+      const isPasswordMatch = await bcrypt.compare(oldPassword,user.password);
+      if(!isPasswordMatch){
+        return res.status(400).json({
+          message:'!Password doesnot match !!',
+          success:false
+        })
+      }
+      else{
+        newPassword = await bcrypt.hash(newPassword, 10)
+        user.password = newPassword
+      }
+    }
+
+    await user.save();
+
+    return res.status(200).json({
+      message:'password changed successfully',
+      success:true
+    })
+    
+  } catch (error) {
+    console.log(error)
   }
 }
