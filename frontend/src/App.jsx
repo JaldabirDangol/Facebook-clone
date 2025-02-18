@@ -14,6 +14,7 @@ import './App.css'
 import { backendurl } from '../configurl'
 import { setSocket } from '../store/socketSlice'
 import SuggestedUserList from './components/SuggestedUserList'
+import Saved from './components/Saved'
 const browserRouter = createBrowserRouter([
   {
     path: '/',
@@ -21,7 +22,8 @@ const browserRouter = createBrowserRouter([
     children: [
       { path: '/suggesteduser', element:<SuggestedUserList/> },
       { path: 'friends' , element:<Friends/>},
-      { path: '/', element: <Home /> }
+      { path: '/', element: <Home /> },
+      { path: '/savedpost', element:<Saved/>}
     ]
   },
   { path: '/profile/:id', element: <UserProfile /> },

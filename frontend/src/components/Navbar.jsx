@@ -19,6 +19,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { setNotification } from "../../store/rtnSlice";
+import { setAllpost } from "../../store/postSlice";
+import { setAuthUser } from "../../store/authSlice";
+import { HelpCircle, LogOut, Settings } from "lucide-react";
 
 export const Navbar = () => {
   const dispatch = useDispatch();
@@ -28,6 +31,7 @@ export const Navbar = () => {
   const [loading, setLoading] = useState(false);
   const { user } = useSelector((store) => store.auth);
   const { notification } = useSelector((store) => store.rtn);
+  const [openProfile ,setOpenProfile] = useState(false)
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -77,6 +81,22 @@ export const Navbar = () => {
     }
   };
 
+  const logOutHandler = async () => {
+    try {
+      const res = await axios.get(`${backendurl}/api/v1/user/logout`, {
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        dispatch(setAuthUser(null));
+        dispatch(setAllpost(null))
+        toast.success(res.data.message);
+        navigate("/login");
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+      console.log(error);
+    }
+  };
   return (
     <div className=" w-screen border rounded-lg bg-white flex items-center justify-between sticky top-0 z-50">
       <div className="flex items-center justify-start ml-4 gap-2">
@@ -235,10 +255,50 @@ export const Navbar = () => {
           )}
         </div>
         <div>
-          <Avatar className="w-7 h-7">
+          {/* <Avatar className="w-7 h-7">
             <AvatarImage src={user?.profilePicture} />
             <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          </Avatar> */}
+
+          <Popover>
+              <PopoverTrigger asChild>
+                   <Avatar onClick={()=>setOpenProfile(true)} className="w-7 h-7">
+                   <AvatarImage src={user?.profilePicture} />
+                   <AvatarFallback>CN</AvatarFallback>
+                  </Avatar> 
+              </PopoverTrigger>
+              <PopoverContent onInteractOutside={()=>setOpenProfile(false)}>
+                <div className="flex flex-col cursor-pointer">
+
+
+                   <div className="flex">
+            <Avatar className="w-7 h-7">
+            <AvatarImage src={user?.profilePicture} />
+            <AvatarFallback>CN</AvatarFallback>
+            </Avatar>  
+            <span className="ml-4">{user?.username}</span>
+                   </div>
+                   <hr className="border-b bg-black w-full my-2"/>
+                   <span onClick={()=>navigate(`profile/${user._id}`)} className="text-blue-500 font-semibold">See all profiles</span>
+
+               <div className="flex items-center gap-2 mt-2">
+              <HelpCircle  size={24} color="#422e2e"/>
+              <span>Help & support</span>
+              </div>
+
+              <div className="flex items-center gap-2 mt-2">
+              <Settings  size={24} color="#422e2e"/>
+              <span>Settings & privacy</span>
+              </div>
+
+              <div onClick={logOutHandler} className="flex items-center gap-2 mt-2">
+              <LogOut  size={24} color="#422e2e"/>
+              <span>Logout</span>
+              </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+
         </div>
       </div>
     </div>

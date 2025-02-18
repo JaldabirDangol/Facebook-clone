@@ -1,5 +1,5 @@
 import express from 'express'
-import { signup , login ,logout ,getProfile, editProfile, suggestedUser ,freindsOrunfreinds, searchUser, getFriends, userDetail } from '../controller/user.controller.js'
+import { signup , login ,logout ,getProfile, editProfile, suggestedUser ,freindsOrunfreinds, searchUser, getFriends, userDetail ,getAllUsers } from '../controller/user.controller.js'
 import {isAuthenticated} from '../middlewares/isAuthenticated.js'
 import upload from '../middlewares/multer.js'
 const router = express.Router();
@@ -14,6 +14,7 @@ router.route('/suggesteduser').get(isAuthenticated,suggestedUser);
 router.route('/:id/friendorunfreind').get(isAuthenticated,freindsOrunfreinds);
 router.route('/search').get(isAuthenticated,searchUser);
 router.route('/friends').get(isAuthenticated,getFriends)
+router.route('/getallusers').get(isAuthenticated,getAllUsers)
 
 
 

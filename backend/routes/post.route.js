@@ -1,6 +1,6 @@
 import express from 'express'
 import upload from '../middlewares/multer.js'
-import { getAllPost ,addNewPost ,postReaction ,addComment ,getCommentOfPost ,deletePost , savedPost, sharePost} from '../controller/post.controller.js';
+import { getAllPost ,addNewPost ,postReaction ,addComment ,getCommentOfPost ,deletePost , savedPost, sharePost, getSavedPost} from '../controller/post.controller.js';
 import {isAuthenticated} from '../middlewares/isAuthenticated.js'
 
 const router = express.Router();
@@ -11,6 +11,7 @@ router.route('/:id/comment').post(isAuthenticated,addComment);
 router.route('/getallcomment').get(isAuthenticated,getCommentOfPost);
 router.route('/delete/:id').delete(isAuthenticated,deletePost);
 router.route('/:id/savepost').get(isAuthenticated,savedPost);
+router.route('/userpost').get(isAuthenticated,getSavedPost);
 router.route('/:id/sharepost').post(isAuthenticated,sharePost)
 
 

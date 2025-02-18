@@ -727,3 +727,17 @@ export const getFriends = async(req,res)=>{
   console.log(error)
  }
 }
+
+export const getAllUsers = async(req,res)=>{
+  try {
+    const userId = req.id;
+      const allUsers = await User.find({_id:{$nin:[userId]}}).select("username profilePicture");
+      return res.status(200).json({
+          message:'All User found',
+          success:true,
+          allUsers
+        })
+  } catch (error) {
+      console.log();
+  }
+}

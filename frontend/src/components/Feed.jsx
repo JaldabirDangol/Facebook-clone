@@ -10,7 +10,7 @@ const Feed = () => {
    <div className='w-full  '>
         <CreatePost/>
     <div>
-      {posts.length > 0 ? (
+      {posts && posts.length > 0 ? (
         posts.map((post) => <Post key={post?._id} post={post} />)
       ) : (
         <p>No posts available</p>

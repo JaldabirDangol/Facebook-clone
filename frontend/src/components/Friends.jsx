@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import useGetMyFriends from "@/hooks/usegetMyFriends";
 
-
 const Friends = () => {
   const navigate = useNavigate();
   useGetMyFriends()

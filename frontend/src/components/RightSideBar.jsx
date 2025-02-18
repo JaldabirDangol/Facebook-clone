@@ -1,8 +1,25 @@
-import React from 'react'
+import { PiPaperPlaneRightFill } from "react-icons/pi";
 import courseraads from '../assets/courseraads.png'
 import schoolads from '../assets/schoolads.jpg'
+import { useDispatch, useSelector } from "react-redux";
+import useGetAllUsers from "@/hooks/useGetAllUsers";
+import { setSelectedUser } from "../../store/authSlice";
+import { useEffect, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 const RightSideBar = () => {
+  useGetAllUsers();
+  const { user, selectedUser, allUsers } = useSelector(store => store.auth);
+  const { onlineUsers, messages } = useSelector(store => store.chat);
+  const [selectedUserHighlight, setSelectedUserHighlight] = useState(null);
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    return () => {
+        dispatch(setSelectedUser(null));
+    }
+}, []);
+
   return (
     <div className='h-screen flex flex-col bg-gray-100 ' >
        <div className='mr-8 ml-4 h-screen mt-2'>
@@ -24,10 +41,17 @@ const RightSideBar = () => {
         <hr className="border-slate-300  mt-6" />
         <h2 className='mt-4 text-slate-700 font-bold'>Groups chats</h2>
         <h2 className='mt-4 text-slate-700 font-bold'>Online User</h2>
-        
-         
+        <div className='flex items-center gap-2 flex-col'>
+ 
+    
+       
+
+          
+        </div>
+    
+
+        </div>
        </div>
-    </div>
   )
 }
 

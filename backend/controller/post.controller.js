@@ -452,3 +452,39 @@ export const sharePost = async (req, res) => {
     console.log(error);
   }
 };
+
+export const getSavedPost = async(req,res)=>{
+  try {
+    const userId = req.id;
+    const user = await User.findById(userId)
+  
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        success: false,
+      });
+    }
+    
+    if(user.saved.length > 0){
+      const userPost = await Post.find({_id:{$in:[...user.saved]}})
+      .populate({
+        path:"author",
+        select:'username profilePicture'
+      })
+
+      return res.status(200).json({
+        message:'saved post found ',
+        success:true,
+        userPost
+      })
+    }
+  
+    return res.status(404).json({
+      message:'user donot have any saved post ',
+      success:false
+    })
+
+  } catch (error) {
+    console.log(error)
+  }
+}
