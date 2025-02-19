@@ -27,13 +27,15 @@ const SuggestedUserList = () => {
   
 
   return (
-    <div className="w-full flex flex-col mx-auto">
+    <div className="w-full flex flex-col mx-auto gap-2">
+      <div className=" ml-8 text-2xl font-semibold mt-4">Suggested Friends</div>
+      <hr className="border-b-slate-50 mt-4" />
     {friends.length === 0 ? (
-      <p className="text-gray-500">No suggested friends available.</p>
+      <p className="text-gray-500 ml-8 mt-2">No suggested friends available.</p>
     ) : (
       friends.map((user) => (
         <div
-          className="hover:bg-gray-100 cursor-pointer flex items-center justify-between gap-4 p-4"
+          className="hover:bg-gray-100 cursor-pointer flex items-center gap-4 p-4"
           key={user._id}
           onClick={() => navigate(`/profile/${user._id}`)}
         >

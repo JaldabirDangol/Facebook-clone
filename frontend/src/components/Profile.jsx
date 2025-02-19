@@ -34,16 +34,12 @@ const Profile = () => {
   const [open, setOpen] = useState(false);
   console.log(isLoggedInUserProfile);
   const [isFriend, setIsFriend] = useState(
-    user?.freinds?.includes(userProfile._id)
+    user?.freinds?.includes(userProfile?._id)
   );
 
   useEffect(() => {
     setDisplayTab(userProfile?.posts || []);
-    // if (user._id === userProfile._id) {
-    //   setActiveTab((prevTab) => prevTab || "saved");
-    // } else {
-    //   setActiveTab("posts");
-    // }
+  
   }, [userProfile]);
 
   const handleTabChange = (tab) => {
@@ -129,19 +125,19 @@ const Profile = () => {
 
   return (
     <div className="flex flex-col items-center w-full h-screen flex-grow relative ">
-      {/* Cover Photo */}
-      <div className="relative w-full h-[60%] ">
+   
+      <div className="relative w-full h-[60%] mt-1">
         {userProfile && userProfile.coverPicture ? (
           <img
             src={userProfile?.coverPicture}
             alt="cover"
-            className="w-[70%] h-[100%] object-center ml-[15%] rounded-lg"
+            className="w-[96%] mx-auto md:w-[70%] h-[100%] object-center md:ml-[15%] rounded-lg"
           />
         ) : (
           <img
             src={blankcover}
             alt="cover"
-            className="w-[70%] h-[100%] object-center ml-[15%] rounded-lg"
+            className=" w-[96%] md:w-[70%] h-[100%] object-center md:ml-[15%] rounded-lg"
           />
         )}
         {isLoggedInUserProfile && (
@@ -151,8 +147,8 @@ const Profile = () => {
         )}
       </div>
 
-      {/* Profile Section */}
-      <div className="flex justify-between  bg-white p-6 shadow-md -mt-16 rounded-lg w-[70%]  mx-[10%]">
+      {/* resreamaingin  */}
+      <div className="flex justify-between  bg-white p-2  md:p-6 shadow-md -mt-16 rounded-lg w-[96%] md:w-[70%]   md:mx-[10%]">
         <div className="flex justify-start">
           <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
             {userProfile && userProfile.profilePicture ? (
@@ -162,16 +158,16 @@ const Profile = () => {
             )}
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <div className="flex flex-col ">
-            <h2 className="text-2xl font-bold mt-14 ml-12">
+          <div className="flex flex-col mt-4 md:ml-14">
+            <h2 className="text-2xl font-bold mt-14 ">
               {userProfile?.username}
             </h2>
-            <p className="text-gray-500 mt-4 ml-12">
+            <p className="text-gray-500 mt-4">
               {userProfile?.freinds?.length || 0} friends
             </p>
           </div>
         </div>
-        <div className="mt-14 ml-6 flex gap-2">
+        <div className="md:mt-14 mt-24 md:ml-6 flex gap-2">
           {isLoggedInUserProfile ? (
             <Button onClick={() => setOpen(!open)} variant="secondary">
               Edit Profile
@@ -184,9 +180,8 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="w-full max-w-5xl mt-6 ">
-        <div className="flex justify-center gap-10 border-b py-3 text-gray-600">
+      <div className="w-full md:max-w-5xl mt-6 ">
+        <div className="flex justify-center gap-3 md:gap-10 border-b py-3 text-gray-600">
           {["posts", "about", "friends", "photos", "videos", "saved"].map(
             (tab) => (
               <span
@@ -203,9 +198,8 @@ const Profile = () => {
         </div>
       </div>
 
-      <div className="flex p-2 bg- w-2/3 gap-4 ">
-        {/* Sidebar */}
-        <div className="flex flex-col w-[22%] border rounded-md  min-h-[200px] max-h-[400px]  p-2">
+      <div className="flex p-2  md:w-2/3 gap-4 ">
+        <div className=" hidden md:flex flex-col  md:w-[22%] border rounded-md  min-h-[200px] max-h-[400px]  p-2">
           <h2 className="font-semibold text-xl ">Intro</h2>
           <div className="flex flex-col items-center gap-2">
             <h3 className="mt-2">{userProfile?.username}</h3>
@@ -231,7 +225,6 @@ const Profile = () => {
           )}
         </div>
 
-        {/* Dynamic Content Section */}
         <div className="flex-1 bg-white">
           {activeTab === "photos" && (
             <div className="grid grid-cols-3 gap-4">
@@ -250,11 +243,13 @@ const Profile = () => {
           )}
 
           {activeTab === "posts" && displayTab.length > 0 && (
-            <div className="flex flex-col w-full mt-2">
+            <div className="flex flex-col w-full ">
               {user._id === userProfile._id && <CreatePost />}
+              <div>
               {displayTab.map((post) => (
-                <Post key={post._id} post={post} />
+                <Post key={post._id} post={post}  />
               ))}
+              </div>
             </div>
           )}
 
@@ -353,7 +348,7 @@ const Profile = () => {
             <div className="flex flex-col my-2 ">
               {displayTab.map((friend) => (
                 <div
-                  className="hover:bg-gray-100 cursor-pointer  flex items-center justify-between gap-4 p-4"
+                  className="hover:bg-gray-100 cursor-pointer  flex items-center md:justify-between gap-4 p-4"
                   key={friend._id}
                   onClick={() => navigate(`/profile/${friend._id}`)}
                 >
@@ -365,7 +360,7 @@ const Profile = () => {
                         alt={friend?.username}
                       />
                       <AvatarFallback>
-                        {friend?.username.charAt(0)}
+                        {friend?.username?.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                   </div>

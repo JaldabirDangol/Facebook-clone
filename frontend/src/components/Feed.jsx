@@ -7,7 +7,7 @@ import Post from './Post';
 const Feed = () => {
   const { posts } = useSelector(store => store.post)
   return (
-   <div className='w-full  '>
+   <div className='w-full  mt-2 '>
         <CreatePost/>
     <div>
       {posts && posts.length > 0 ? (

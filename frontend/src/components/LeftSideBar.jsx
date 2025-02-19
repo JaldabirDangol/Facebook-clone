@@ -22,7 +22,7 @@ const LeftSideBar = () => {
     {
       icon: (
         <Avatar className="w-7 h-7">
-          <AvatarImage src={user?.profilePicture} />
+          <AvatarImage  src={user?.profilePicture} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       ),
@@ -48,17 +48,8 @@ const LeftSideBar = () => {
         case "Saved":
             navigate('/savedpost');
             break;
-        case "Groups":
-            navigate('/groups');
-            break;
-        case "Marketplace":
-            navigate('/marketplace');
-            break;
         case "Messenger":
             navigate('/chat');
-            break;
-        case "Reels":
-            navigate('/reels');
             break;
         case "Logout" :
             logOutHandler();

@@ -16,12 +16,6 @@ const app = express()
  })
 
  const userSocketMap = {} 
-
-      //userSocketMap ={
-       //  "user1":"fsdfgdsfgdfgdf",
-        // "user2":"fsdajfhjsdaofsd"
-      //   }
-
  export const getReceiverSocketId = (receiverId)=>userSocketMap[receiverId]
 
  io.on('connection',(socket)=>{

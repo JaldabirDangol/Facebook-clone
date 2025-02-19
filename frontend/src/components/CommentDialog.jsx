@@ -126,7 +126,7 @@ if(!selectedpost?.issharedpost){
             <div className='w-1/2'>
               <img
                 className='rounded-lg w-full aspect-square object-cover'
-                src={selectedpost.issharedpost?.image}
+                src={selectedpost?.issharedpost?.image}
                 alt="post_img"
               />
             </div>

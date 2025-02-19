@@ -72,8 +72,8 @@ export const login = async (req, res) => {
     }
     const bcryptPassword = await bcrypt.compare(password, user.password); //hash check
     if (!bcryptPassword) {
-      return res.status(402).json({
-        msessage: "password didnot match",
+      return res.status(400).json({
+        message: "password didnot match",
         success: false,
       });
     }

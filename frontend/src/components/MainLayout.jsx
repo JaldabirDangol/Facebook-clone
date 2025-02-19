@@ -36,7 +36,7 @@ const MainLayout = () => {
     </div>
   
     <div className="flex flex-grow overflow-hidden">
-      <div className="bg-gray-100 w-[25%] h-screen sticky top-16 overflow-y-auto">
+      <div className="hidden md:block bg-gray-100 w-[25%] h-screen sticky top-16 overflow-y-auto">
         <LeftSideBar /> 
       </div>
   
@@ -44,7 +44,7 @@ const MainLayout = () => {
         <Outlet />
       </div>
   
-      <div className="bg-gray-100 w-[25%] h-screen sticky top-16 overflow-y-auto">
+      <div className="hidden md:block bg-gray-100 w-[25%] h-screen sticky top-16 overflow-y-auto">
         <RightSideBar /> 
       </div>
     </div>

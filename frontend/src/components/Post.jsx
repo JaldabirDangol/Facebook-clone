@@ -13,6 +13,7 @@ import { setAllpost, setSelectedPost } from '../../store/postSlice'
 import CommentDialog from './CommentDialog'
 import { useNavigate } from 'react-router-dom';
 import ShareDialog from './ShareDialog';
+import { setUserProfile } from '../../store/authSlice';
 
 const reactions = [
     { name: 'like', icon: <FaThumbsUp className="text-blue-500 h-5 w-5" /> },
@@ -22,7 +23,7 @@ const reactions = [
     { name: 'sad', icon: <FaSadTear className="text-yellow-500 h-5 w-5" /> },
     { name: 'angry', icon: <FaAngry className="text-red-500 h-5 w-5" /> }
 ];
-const Post = ({ post }) => {
+const Post = ({ post}) => {
     const [open, setOpen] = useState(false);
     const [openShare , setOpenShare] = useState(false)
     const { user } = useSelector(store => store.auth);
@@ -43,13 +44,12 @@ const Post = ({ post }) => {
             );
            
             if (res.data.success) {
-
                 setSelectedReaction(
                     existingReaction && existingReaction.reaction === reactionType.name
                         ? null
                         : reactionType
                 );
-                // Adjust reaction count
+
                 if (existingReaction && existingReaction.reaction === reactionType.name) {
                     setPostReactCount(postReactCount - 1);
                 } else if (!existingReaction) {
@@ -97,8 +97,7 @@ const Post = ({ post }) => {
     }
  if (!post?.issharedpost) {
         return (
-            <Card className="my-10 max-w-2xl  w-2/3 relative max-h-xl  mx-auto border shadow-sm rounded-lg overflow-hidden">
-                {/* Post Header */}
+            <Card className=" my-4  md:my-10  w-full md:max-w-2xl  md:w-2/3 relative max-h-xl  mx-auto border shadow-sm rounded-lg overflow-hidden">
                 <div className="flex items-center justify-between pt-3 pl-3 pr-3 ">
                     <div className="flex items-center gap-3">
                         <Avatar>
@@ -140,9 +139,8 @@ const Post = ({ post }) => {
                 )
             }
                 {post?.caption && <p className="p-3 text-sm text-gray-800">{post.caption}</p>}
-                {post?.image && <img className="w-full border max-h-[650px] object-cover" src={post.image} alt="post_img"  onError={(e) => e.target.style.display = 'none'}/>}
+                {post?.image && <img className="w-full border max-h-[600px] object-cover" src={post.image} alt="post_img"  onError={(e) => e.target.style.display = 'none'}/>}
 
-                {/* Engagement Counts */}
                 <div className="flex justify-between items-center text-gray-600 text-sm mt-1 mb-1 px-2">
                     <div className="flex items-center gap-1">
                         {selectedReaction ? selectedReaction.icon : <FaThumbsUp className="text-blue-500" />}
@@ -156,16 +154,12 @@ const Post = ({ post }) => {
                     </div>
                 </div>
 
-
-                {/* Engagement Bar */}
                 <div className="flex items-center justify-center text-gray-600 text-sm font-medium border h-10">
-                    {/* Like Button with Reaction Popup on Hover */}
                     <div className="relative flex flex-col justify-center items-center w-1/3 h-full cursor-pointer border-r hover:bg-gray-100 group">
                         <div className="flex items-center gap-2">
                             <FaThumbsUp />
                             <span>{selectedReaction ? selectedReaction.name : 'Like'}</span>
                         </div>
-                        {/* Reaction Popup */}
                         <div
                             className="absolute top-[-48px] transform translate-x-[23%] flex bg-white shadow-md rounded-full px-4 py-2 space-x-3 border opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                         >
@@ -181,7 +175,6 @@ const Post = ({ post }) => {
                         </div>
                     </div>
 
-                    {/* Comment Button */}
                     <div onClick={() => {setOpen(true) 
                         dispatch(setSelectedPost(post))
                     }} className="flex justify-center items-center gap-2 cursor-pointer w-1/3 h-full border-r hover:bg-gray-100">
@@ -189,7 +182,6 @@ const Post = ({ post }) => {
                         <span>Comment</span>
                     </div>
 
-                    {/* Share Button */}
                 <div onClick={()=>{setOpenShare(true) 
                     dispatch(setSelectedPost(post))
                 }} className="flex items-center justify-center gap-2 cursor-pointer w-1/3 h-full hover:bg-gray-100">
@@ -205,7 +197,7 @@ const Post = ({ post }) => {
     else {
     return (
         post?.issharedpost && 
-        <Card className="my-10  relative max-w-2xl  w-2/3 mx-auto border shadow-sm rounded-lg overflow-hidden">
+        <Card className="my-4  md:my-10  relative md:max-w-2xl  md:w-2/3 mx-auto border shadow-sm rounded-lg overflow-hidden">
             {/* Post Header */}
             <div className="flex items-center justify-between pt-3 pl-3 pr-3">
                 <div className="flex items-center gap-3">
@@ -250,7 +242,7 @@ const Post = ({ post }) => {
 
             {post.caption && <p className="p-3 text-sm text-gray-800">{post.caption}</p>}
             <div className='border rounded-xl m-3'>
-                {post.issharedpost.image && <img className="w-full rounded-t-xl border max-h-[700px] object-cover" src={post.issharedpost.image} alt="post_img" />}
+                {post.issharedpost.image && <img className="w-full rounded-t-xl border max-h-[600px] object-cover" src={post.issharedpost.image} alt="post_img" />}
                 {post?.issharedpost?.author?.username && <div className="flex items-center gap-3 mt-2 ml-2">
                     <Avatar>
                         <AvatarImage src={post.issharedpost.author?.profilePicture} alt="profile_image" />
@@ -266,7 +258,6 @@ const Post = ({ post }) => {
             </div>
 
 
-            {/* Engagement Counts */}
             <div className="flex justify-between items-center text-gray-600 text-sm mt-1 mb-1 px-2">
                 <div className="flex items-center gap-1">
                     {selectedReaction ? selectedReaction.icon : <FaThumbsUp className="text-blue-500" />}
@@ -281,15 +272,13 @@ const Post = ({ post }) => {
             </div>
 
 
-            {/* Engagement Bar */}
             <div className="flex items-center justify-center text-gray-600 text-sm font-medium border h-10">
-                {/* Like Button with Reaction Popup on Hover */}
                 <div className="relative flex flex-col justify-center items-center w-1/3 h-full cursor-pointer border-r hover:bg-gray-100 group">
                     <div className="flex items-center gap-2">
                         <FaThumbsUp />
                         <span>{selectedReaction ? selectedReaction.name : 'Like'}</span>
                     </div>
-                    {/* Reaction Popup */}
+
                     <div
                         className="absolute top-[-48px] transform translate-x-[23%] flex bg-white shadow-md rounded-full px-4 py-2 space-x-3 border opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                     >
@@ -305,13 +294,13 @@ const Post = ({ post }) => {
                     </div>
                 </div>
 
-                {/* Comment Button */}
-                <div onClick={() => setOpen(true)} className="flex justify-center items-center gap-2 cursor-pointer w-1/3 h-full border-r hover:bg-gray-100">
+                <div onClick={() => {setOpen(true)
+                     dispatch(setSelectedPost(post))
+                }} className="flex justify-center items-center gap-2 cursor-pointer w-1/3 h-full border-r hover:bg-gray-100">
                     <FaRegComment />
                     <span>Comment</span>
                 </div>
 
-                {/* Share Button */}
                 <div onClick={()=>{setOpenShare(true) 
                     dispatch(setSelectedPost(post))
                 }} className="flex items-center justify-center gap-2 cursor-pointer w-1/3 h-full hover:bg-gray-100">

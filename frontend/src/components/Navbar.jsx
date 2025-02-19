@@ -56,13 +56,7 @@ export const Navbar = () => {
       navigate("/");
     } else if (name === "friends") {
       navigate("/friends");
-    } else if (name === "video") {
-      navigate("/video");
-    } else if (name === "marketplace") {
-      navigate("/marketplace");
-    } else if (name === "game") {
-      navigate("/game");
-    }
+    } 
   };
   const fetchSearchResults = async (e) => {
     const value = e;
@@ -138,14 +132,14 @@ export const Navbar = () => {
     }
   }
   return (
-    <div className=" w-screen border rounded-lg bg-white flex items-center justify-between sticky top-0 z-50">
+    <div className="w-screen border rounded-lg bg-white flex items-center justify-between sticky top-0 z-50">
       <div className="flex items-center justify-start ml-4 gap-2">
         <img
           src={logo}
           alt="Logo"
           className="h-16 w-16 object-contain cursor-pointer"
         />
-        <div className="flex items-center relative w-full">
+        <div className="flex items-center relative w-1/2 md:w-full">
           <CiSearch size={18} className="absolute left-2 cursor-pointer" />
           <Input
             name="search"
@@ -154,7 +148,7 @@ export const Navbar = () => {
             onChange={(e) => setSearchBox(e.target.value)}
             className="border border-gray-300 rounded-xl
      bg-gray-100 outline-none focus:outline-none focus:ring-0
-      focus:border-gray-300 focus:shadow-none w-80 "
+      focus:border-gray-300 focus:shadow-none md:w-80 w-20 focus:w-80 transition-all duration-300"
             placeholder="Search Facebook"
           />
           {searchBox.trim() && (
@@ -166,7 +160,7 @@ export const Navbar = () => {
                   <div
                     key={user._id}
                     className="flex items-center gap-3 p-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => navigate(`/profile/`)}
+                    onClick={() => navigate(`/profile/${user._id}`)}
                   >
                     <Avatar>
                       <AvatarImage src={user.profilePicture} />
@@ -182,7 +176,9 @@ export const Navbar = () => {
           )}
         </div>
       </div>
-      <div className="flex items-center justify-center gap-16">
+
+      
+      <div className="flex items-center justify-center md:gap-16 gap-2">
         <div>
           <MdHome
             className="cursor-pointer"
@@ -197,23 +193,18 @@ export const Navbar = () => {
             size={24}
           />{" "}
         </div>
-        <div>
+        <div className="hidden md:block cursor-pointer">
           <MdOndemandVideo
-            className="cursor-pointer"
-            onClick={() => navbarHandler("video")}
             size={24}
           />{" "}
         </div>
-        <div>
+        <div className="hidden md:block cursor-pointer">
           <CiShop
-            className="cursor-pointer"
-            onClick={() => navbarHandler("marketplace")}
             size={24}
           />{" "}
         </div>
-        <div>
+        <div className="hidden md:block cursor-pointer">
           <IoGameControllerOutline
-            className="cursor-pointer"
             onClick={() => navbarHandler("game")}
             size={24}
           />{" "}
@@ -221,12 +212,13 @@ export const Navbar = () => {
       </div>
 
       <div className="mr-8 flex justify-end gap-4 cursor-pointer">
-        <div>
+        <div className="hidden md:block cursor-pointer">
           <TbCube size={24} />
         </div>
-        <div>
+        <div onClick={()=>navigate('/chat')}>
           <FaFacebookMessenger size={24} />
         </div>
+
         <div className="relative">
           <IoNotifications size={24} />
           {notification?.length > 0 && (
@@ -294,8 +286,8 @@ export const Navbar = () => {
             </Popover>
           )}
         </div>
+        
         <div>
-          
           <Popover>
               <PopoverTrigger asChild>
                    <Avatar onClick={()=>setOpenProfile(true)} className="w-7 h-7">
@@ -366,7 +358,12 @@ export const Navbar = () => {
             </Popover>
 
         </div>
+
+
       </div>
+
+
+
     </div>
   );
 };
