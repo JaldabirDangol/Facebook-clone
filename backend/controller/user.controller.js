@@ -81,8 +81,6 @@ export const login = async (req, res) => {
       expiresIn: "1d",
     });
 
-    //populate post
-
     return res
       .cookie("logincookie", token, {
         httpOnly: true,
@@ -92,6 +90,7 @@ export const login = async (req, res) => {
       .json({
         message:`Welcome back ${user.username}`,
         success: true,
+        user
       });
   } catch (error) {
     console.log(error);
@@ -109,44 +108,7 @@ export const logout = async (req, res) => {
   }
 };
 
-export const userDetail = async (req,res)=>{
-  try {
-    const userId = req.id;
-    const user = await User.findById(userId)
 
-    if(!user){
-      return res.status(400).json({
-        message:'user doesnot exists',
-        success:false
-    })
-    }
-    const populatedPosts = user?.posts?.length
-    ? (await Promise.all(
-        user.posts.map(async (postId) => {
-          const post = await Post.findById(postId);
-          return post && post.author.equals(user._id) ? post : null;
-        })
-      )).filter(post => post !== null)
-    : [];
-
-   
-  return res.status(200).json({
-  message: 'User data fetched successfully',
-  success: true,
-  user: {
-    _id: user._id,
-    username: user.username,
-    email: user.email,
-    profilePicture: user.profilePicture,
-    bio: user.bio,
-    freinds: user.freinds, 
-    posts: populatedPosts,
-  }
-});
-  } catch (error) {
-    console.log(error)
-  }
-}
 export const getProfile = async (req, res) => {
   try {
     const myId = req.id;

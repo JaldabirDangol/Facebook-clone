@@ -150,7 +150,7 @@ export const postReaction = async (req, res) => {
             { $pull: { reaction: existingReaction._id } }
           );
           const exId = existingReaction._id;
-        await existingReaction.deleteOne();
+          await existingReaction.deleteOne();
        
         const postOwnerSocketId = post.author !== userId ? getReceiverSocketId(post.author) : null;
         if (postOwnerSocketId) io.to(postOwnerSocketId).emit("notification", {

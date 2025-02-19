@@ -1,6 +1,6 @@
-import { setMessages } from "@/redux/chatSlice";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { deleteMessage, setMessages } from "../../store/chatSlice";
 
 const useGetRTM = () => {
     const dispatch = useDispatch();
@@ -10,7 +10,9 @@ const useGetRTM = () => {
         socket?.on('newMessage', (newMessage) => {
             dispatch(setMessages([...messages, newMessage]));
         })
-
+        socket?.on('deletemessage', (deletemessage) => {
+            dispatch(deleteMessage(deletemessage._id));
+        })
         return () => {
             socket?.off('newMessage');
         }

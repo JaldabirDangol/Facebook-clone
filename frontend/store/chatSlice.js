@@ -6,7 +6,6 @@ const chatSlice = createSlice({
     initialState:{
         onlineUsers:[],
         messages:[],
-        alluser:[]
     },
     reducers:{
         setOnlineUsers:(state,action)=>{
@@ -15,11 +14,20 @@ const chatSlice = createSlice({
         setMessages:(state,action)=>{
             state.messages = action.payload
         },
-        setAllUsers:(state,action)=>{
-            state.alluser = action.payload
-        }
+        setSelectedMessages: (state, action) => {
+            state.selectedMessage = action.payload;
+          },
+        deleteMessage: (state, action) => {
+              const messageIndex = state.messages.findIndex(
+                  (msg) => msg._id === action.payload
+              );
+      
+              if (messageIndex !== -1) {
+                  state.messages[messageIndex].isDeleted = true; 
+              }
+          },
     }
 })
 
-export const {setOnlineUsers,setMessages ,setAllUsers} = chatSlice.actions;
+export const {setOnlineUsers,setMessages ,deleteMessage ,setSelectedMessages} = chatSlice.actions;
 export default chatSlice.reducer;

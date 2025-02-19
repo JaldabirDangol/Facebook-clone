@@ -24,7 +24,6 @@ const SuggestedUserList = () => {
   
     fetchSuggestedUsers();
   }, []); 
-  
 
   return (
     <div className="w-full flex flex-col mx-auto gap-2">

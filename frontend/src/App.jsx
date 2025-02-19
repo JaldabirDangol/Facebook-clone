@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { useRef } from "react";
 import { useDispatch, useSelector } from 'react-redux'
 import { io } from 'socket.io-client'
 import Signup from './components/SignUp'
@@ -15,6 +16,7 @@ import { backendurl } from '../configurl'
 import { setSocket } from '../store/socketSlice'
 import SuggestedUserList from './components/SuggestedUserList'
 import Saved from './components/Saved'
+import ChatPage from './components/ChatPage'
 const browserRouter = createBrowserRouter([
   {
     path: '/',
@@ -26,6 +28,7 @@ const browserRouter = createBrowserRouter([
       { path: '/savedpost', element:<Saved/>}
     ]
   },
+  { path : '/chat' ,element:<ChatPage/>},
   { path: '/profile/:id', element: <UserProfile /> },
   { path: '/login', element: <Login /> },
   { path: '/signup', element: <Signup /> }
@@ -35,8 +38,9 @@ function App() {
   const { user } = useSelector(store => store.auth)
   const {socket} = useSelector(store => store.socketio)
   const dispatch = useDispatch()
+  const [fetched,setFetched] = useState(false)
   useEffect(() => {
-    if (user) {
+    if (user && !fetched) {
       const socketio = io(`${backendurl}`, {
         query: {
           userId: user?._id
@@ -44,7 +48,7 @@ function App() {
         transports: ['websocket']
       });
       dispatch(setSocket(socketio));
-
+        setFetched(false)
       socketio.on('getOnlineUsers', (onlineUsers) => {
         dispatch(setOnlineUsers(onlineUsers));
       });
@@ -61,7 +65,7 @@ function App() {
       socket.close();
       dispatch(setSocket(null));
     }
-  }, [user, dispatch]);
+  }, [user,dispatch]);
   return (
     <div>
       <RouterProvider router = {browserRouter}/>
@@ -69,4 +73,6 @@ function App() {
   )
 }
 
-export default App
+
+
+export default App;

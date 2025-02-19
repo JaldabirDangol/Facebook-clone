@@ -8,7 +8,9 @@ const authSlice = createSlice({
         userProfile:null,
         selectedUser:null,
         userFriend:[],
-        userSavedPost:[]
+        userSavedPost:[],
+        allUsers:[],
+        mutualFriends:[]
     },
     reducers:{
     setAuthUser:(state,action)=>{
@@ -29,8 +31,13 @@ const authSlice = createSlice({
     },
     setUserSavedPost:(state,action)=>{
         state.userSavedPost = action.payload
-    }
-    }
+    },
+    setAllUser:(state,action)=>{
+        state.allUsers = action.payload
+    },
+    setMutualFriends:(state,action)=>{
+        state.mutualFriends = action.payload
+    }}
 })
 
 export const {
@@ -39,6 +46,8 @@ export const {
     setUserProfile,
     setSelectedUser,
     setUserFriend,
-    setUserSavedPost
+    setUserSavedPost,
+    setAllUser,
+    setMutualFriends
 } = authSlice.actions;
 export default authSlice.reducer;
