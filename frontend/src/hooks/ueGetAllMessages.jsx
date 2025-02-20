@@ -9,12 +9,10 @@ const useGetAllMessage = () => {
     const {selectedUser} = useSelector(store=>store.auth);
     useEffect(() => {
         if (!selectedUser?._id) return
-        console.log('asdfasdfasdfasdfvbukasdfhsadgifluasdgfiouasdg')
         const fetchAllMessage = async () => {
             try {
                 const res = await axios.get(`${backendurl}/api/v1/message/${selectedUser?._id}/allmessage`, { withCredentials: true });
                 if (res.data.success) {  
-                    console.log('all messages', res.data)
                     dispatch(setMessages(res.data.messages));
                 }
             } catch (error) {

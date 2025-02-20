@@ -52,7 +52,6 @@ const ChatPage = () => {
         }
       );
       setSearchResults(res.data.searchResults);
-      console.log();
     } catch (error) {
       toast.error("Error fetching users");
       console.error(error);
@@ -247,6 +246,7 @@ const ChatPage = () => {
                 <AvatarImage src={selectedUser?.profilePicture} alt="profile" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
+
               <div className="flex justify-between w-full">
                 <span className="font-medium">{selectedUser?.username}</span>
                 <Popover >
@@ -265,6 +265,7 @@ const ChatPage = () => {
                   </PopoverContent>
                 </Popover>
               </div>
+
             </div>
             <div className="mb-4 overflow-y-auto max-h-[80vh]">
               <Messages selectedUser={selectedUser} />

@@ -148,7 +148,6 @@ const Profile = () => {
         )}
       </div>
 
-      {/* resreamaingin  */}
       <div className="flex justify-between  bg-white p-2  md:p-6 shadow-md -mt-16 rounded-lg w-[96%] md:w-[70%]   md:mx-[10%]">
         <div className="flex justify-start">
           <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
@@ -164,9 +163,6 @@ const Profile = () => {
               {userProfile?.username}
             </h2>
 
-            {/* <p className="text-gray-500 mt-4">
-              {userProfile?.freinds?.length || 0} friends
-            </p> */}
        {user?._id === userProfile._id && (<p onClick={() => handleTabChange("friends")} className="text-gray-500 mt-4   cursor-pointer flex">
               {userProfile?.freinds?.length || 0} friends
             </p>)}

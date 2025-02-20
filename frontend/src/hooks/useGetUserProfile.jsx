@@ -9,8 +9,6 @@ const useGetUserProfile = (userId) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   useEffect(() => {
-    console.log("useGetUserProfile hook triggered with userId:", userId);
-
     if (!userId) {
       console.log("Invalid userId:", userId);
       return;
@@ -24,14 +22,13 @@ const useGetUserProfile = (userId) => {
  
         if (res.data.success) {
           dispatch(setUserProfile(res.data.user));
-         console.log('deata fetch succesfull')
         }
       } catch (error) {
         console.log("Error fetching user profile:", error);
 
         if (error.response && error.response.status === 401) {
           console.log("User is not authenticated. Redirecting to login...");
-          navigate("/login"); // Redirect to login page
+          navigate("/login"); 
         }
       }
     };

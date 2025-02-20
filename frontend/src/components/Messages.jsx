@@ -16,12 +16,12 @@ const Messages = ({ selectedUser }) => {
     const { messages, selectedMessage } = useSelector(store => store.chat);
     const { user } = useSelector(store => store.auth);
     const dispatch = useDispatch();
-    const [openPopout, setOpenPopout] = useState(false); // State for popout visibility
+    const [openPopout, setOpenPopout] = useState(false); 
     const handleDeleteMessage = async (msgId) => {
         try {
             const res = await axios.delete(`${backendurl}/api/v1/message/delete/${msgId}`, { withCredentials: true })
             if (res.data.success) {
-                dispatch(deleteMessage(msgId)); // Call delete action or API
+                dispatch(deleteMessage(msgId)); 
                 setOpenPopout(false);
                 toast.success(res.data.message)
             }

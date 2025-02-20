@@ -39,7 +39,6 @@ export const signup = async (req, res) => {
     });
 
     res.status(201).json({
-      //send user
       user: {
         username,
         email,
@@ -516,9 +515,6 @@ export const freindsOrunfreinds = async(req,res)=>{
         targetUser:targetUserP
       })
     }
-
-  
-
   } catch (error) {
     console.log(error)
   }

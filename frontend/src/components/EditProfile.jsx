@@ -91,7 +91,6 @@ const EditProfile = ({ open, setOpen, userProfile }) => {
           onSubmit={handleProfileUpdate}
           className="border rounded-lg p-2 bg-slate-50"
         >
-          {/* Profile Picture */}
           <div className="font-semibold text-lg">
             Profile Picture
             <div className="flex justify-center items-center relative mt-2">
@@ -110,8 +109,6 @@ const EditProfile = ({ open, setOpen, userProfile }) => {
               />
             </div>
           </div>
-
-          {/* Cover Photo */}
           <div className="font-semibold text-lg mt-2">
             Cover Photo
             <div className="flex justify-center items-center mt-2 relative">
@@ -131,7 +128,6 @@ const EditProfile = ({ open, setOpen, userProfile }) => {
             </div>
           </div>
 
-          {/* Bio */}
           <div className="font-semibold text-lg mt-2">
             Bio
             <div className="flex justify-center">
@@ -143,8 +139,6 @@ const EditProfile = ({ open, setOpen, userProfile }) => {
               />
             </div>
           </div>
-
-          {/* Gender */}
           <div className="flex items-center space-x-4 font-semibold text-lg mt-2">
             Gender
             <label className="flex items-center space-x-2 cursor-pointer ml-2">
@@ -171,7 +165,6 @@ const EditProfile = ({ open, setOpen, userProfile }) => {
             </label>
           </div>
 
-          {/* Change Password */}
           <div className="font-semibold text-lg mt-2">
             Change Password (Optional)
             <input
@@ -189,8 +182,6 @@ const EditProfile = ({ open, setOpen, userProfile }) => {
               onChange={(e) => setNewPassword(e.target.value)}
             />
           </div>
-
-          {/* Submit Button */}
           <Button type="submit" className="w-full mt-4">
             Save Changes
           </Button>

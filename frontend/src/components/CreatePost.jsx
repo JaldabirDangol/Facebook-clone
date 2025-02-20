@@ -10,7 +10,6 @@ const CreatePost = () => {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-4 w-full mx-auto  md:w-2/3  mt-1 overflow-hidden">
-      {/* Top Section: Avatar & Input */}
       <div className="flex items-center space-x-3">
         <Avatar className="w-10 h-10">
           <AvatarImage src={user?.profilePicture} />
@@ -24,10 +23,7 @@ const CreatePost = () => {
         />
       </div>
 
-      {/* Divider */}
       <hr className="my-3 border-gray-300" />
-
-      {/* Bottom Section: Post Options */}
       <div className="flex justify-between">
         <button className="flex items-center space-x-2 text-gray-600 hover:bg-gray-100 px-3 py-2 rounded-md">
           <Video className="text-red-500" size={20} />
