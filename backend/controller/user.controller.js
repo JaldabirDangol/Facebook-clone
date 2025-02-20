@@ -627,7 +627,7 @@ export const mutualFriends = async(req,res)=>{
     return res.status(200).json({
       message:`you have ${mutualFriends.length} mutual friends`,
       success:true,
-      mutualFriend:populatedMutualFriends
+      mutual:populatedMutualFriends
     })
   } catch (error) {
     console.log(error)

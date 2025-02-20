@@ -14,16 +14,9 @@ const Messages = ({ selectedUser }) => {
     useGetRTM()
     useGetAllMessage()
     const { messages, selectedMessage } = useSelector(store => store.chat);
-    console.log('messagessss',messages)
-    console.log('messagessss',messages.map((msg)=>(
-            msg.message
-    )))
     const { user } = useSelector(store => store.auth);
-
     const dispatch = useDispatch();
-
     const [openPopout, setOpenPopout] = useState(false); // State for popout visibility
-
     const handleDeleteMessage = async (msgId) => {
         try {
             const res = await axios.delete(`${backendurl}/api/v1/message/delete/${msgId}`, { withCredentials: true })

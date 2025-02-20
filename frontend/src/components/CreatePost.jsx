@@ -9,7 +9,7 @@ const CreatePost = () => {
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 w-full md:w-2/3 mx-auto mt-1 ">
+    <div className="bg-white shadow-md rounded-lg p-4 w-full mx-auto  md:w-2/3  mt-1 overflow-hidden">
       {/* Top Section: Avatar & Input */}
       <div className="flex items-center space-x-3">
         <Avatar className="w-10 h-10">
@@ -31,7 +31,7 @@ const CreatePost = () => {
       <div className="flex justify-between">
         <button className="flex items-center space-x-2 text-gray-600 hover:bg-gray-100 px-3 py-2 rounded-md">
           <Video className="text-red-500" size={20} />
-          <span className="text-sm">Live video</span>
+          <span className="text-sm">Live</span>
         </button>
         <button onClick={() => setOpen(true)} className="flex items-center space-x-2 text-gray-600 hover:bg-gray-100 px-3 py-2 rounded-md">
           <Image className="text-green-500" size={20} />
@@ -39,7 +39,7 @@ const CreatePost = () => {
         </button>
         <button className="flex items-center space-x-2 text-gray-600 hover:bg-gray-100 px-3 py-2 rounded-md">
           <Smile className="text-yellow-500" size={20} />
-          <span className="text-sm">Feeling/activity</span>
+          <span className="text-sm ">Feeling/activity</span>
         </button>
       </div>
       <CreatePostDialog open={open} setOpen={setOpen} />

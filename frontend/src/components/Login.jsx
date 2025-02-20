@@ -52,10 +52,10 @@ const Login = () => {
   };
  
   return (
-    <div className="w-screen h-screen flex flex-col flex-cols items-center justify-start ">
+    <div className="w-full h-screen flex flex-col flex-cols items-center justify-start ">
       <div className=" text-6xl text-blue-600 font-semibold mt-8">Facebook</div>
-      <div className="text-3xl font-bold mt-8">Connect with friends and the world </div>
-      <div className="text-3xl font-bold">around you on Facebook.</div>
+      <div className="md:text-3xl text-2xl font-bold mt-8">Connect with friends and the world </div>
+      <div className="md:text-3xl text-2xl font-bold ">around you on Facebook.</div>
       <div className="border-zinc-100 border p-4 rounded-xl shadow-md  mt-12 w-full md:w-[47%] lg:w-[32%] ">
 
         <form className="mt-4" onSubmit={logInHandler}>

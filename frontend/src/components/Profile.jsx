@@ -17,14 +17,16 @@ import { backendurl } from "../../configurl";
 import { toast } from "sonner";
 import { setAuthUser, setUserProfile } from "../../store/authSlice";
 import useGetUserProfile from "@/hooks/useGetUserProfile";
+import useGetMutualFriends from "@/hooks/useGetMutualFriends";
 
 const Profile = () => {
+  useGetMutualFriends()
   const navigate = useNavigate();
   const params = useParams();
   const userId = params.id;
   useGetUserProfile(userId);
   const [activeTab, setActiveTab] = useState("posts");
-  const { userProfile, user } = useSelector((store) => store.auth);
+  const { userProfile, user ,mutualFriends } = useSelector((store) => store.auth);
   const { selectedpost } = useSelector((store) => store.post);
   const isLoggedInUserProfile = user?._id === userProfile?._id;
   const [displayTab, setDisplayTab] = useState([]);
@@ -32,7 +34,6 @@ const Profile = () => {
   const [threeDot, setThreeDot] = useState(false);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  console.log(isLoggedInUserProfile);
   const [isFriend, setIsFriend] = useState(
     user?.freinds?.includes(userProfile?._id)
   );
@@ -158,22 +159,29 @@ const Profile = () => {
             )}
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <div className="flex flex-col mt-4 md:ml-14">
-            <h2 className="text-2xl font-bold mt-14 ">
+          <div className="flex flex-col mt-4 md:ml-8">
+            <h2 className=" ms:text-xl font-bold mt-14  md:mt-10">
               {userProfile?.username}
             </h2>
-            <p className="text-gray-500 mt-4">
+
+            {/* <p className="text-gray-500 mt-4">
               {userProfile?.freinds?.length || 0} friends
-            </p>
+            </p> */}
+       {user?._id === userProfile._id && (<p onClick={() => handleTabChange("friends")} className="text-gray-500 mt-4   cursor-pointer flex">
+              {userProfile?.freinds?.length || 0} friends
+            </p>)}
+            {user?._id !== userProfile._id && (<p onClick={() => handleTabChange("friends")} className="text-gray-500 mt-4   cursor-pointer flex">
+              {userProfile?.freinds?.length || 0} friends , {mutualFriends.length} mutual friends
+            </p>)}
           </div>
         </div>
-        <div className="md:mt-14 mt-24 md:ml-6 flex gap-2">
+        <div className="md:mt-14 mt-24 md:ml-6 flex gap-2  ">
           {isLoggedInUserProfile ? (
-            <Button onClick={() => setOpen(!open)} variant="secondary">
+            <Button onClick={() => setOpen(!open)} variant="secondary" className='text-xs'>
               Edit Profile
             </Button>
           ) : (
-            <Button onClick={friendReqHandler}  className={  isFriend ? "bg-gray-500 text-white" : "bg-blue-500 text-white" }>
+            <Button onClick={friendReqHandler}  className={  isFriend ? "bg-gray-500 text-white text-xs md:text-normal" : "bg-blue-500 text-white text-xs md:text-normal " }>
               { isFriend ? "Remove Friend" : "Send Friend"}
             </Button>
           )}
@@ -344,36 +352,72 @@ const Profile = () => {
             </div>
           )}
 
-          {activeTab === "friends" && (
-            <div className="flex flex-col my-2 ">
-              {displayTab.map((friend) => (
-                <div
-                  className="hover:bg-gray-100 cursor-pointer  flex items-center md:justify-between gap-4 p-4"
-                  key={friend._id}
-                  onClick={() => navigate(`/profile/${friend._id}`)}
-                >
-                  <div className="ml-10">
-                    <Avatar className="w-16 h-16 ">
-                      <AvatarImage
-                        className="w-full h-full object-cover"
-                        src={friend?.profilePicture}
-                        alt={friend?.username}
-                      />
-                      <AvatarFallback>
-                        {friend?.username?.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
+        {activeTab === "friends" && (
+            <div className="flex flex-col">
+              <h1>Friends</h1>
+              <div className="flex flex-col my-2 ">
+                {displayTab.map((friend) => (
+                  <div
+                    className="hover:bg-gray-100 cursor-pointer  flex items-center justify-between gap-4 p-4"
+                    key={friend._id}
+                    onClick={() => navigate(`/profile/${friend._id}`)}
+                  >
+                    <div className="ml-10">
+                      <Avatar className="w-16 h-16 ">
+                        <AvatarImage
+                          className="w-full h-full object-cover"
+                          src={friend?.profilePicture}
+                          alt={friend?.username}
+                        />
+                        <AvatarFallback>
+                          {friend && friend?.username?.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
+                    <span className="font-medium mr-6">
+                      {friend?.bio?.length > 50
+                        ? friend.bio.slice(0, 50) + "..."
+                        : friend?.bio}
+                    </span>
+                    <span className="font-medium mr-16">{friend?.username}</span>
                   </div>
-                  <span className="font-medium mr-6">
-                    {friend?.bio?.length > 50
-                      ? friend.bio.slice(0, 50) + "..."
-                      : friend?.bio}
-                  </span>
-                  <span className="font-medium mr-16">{friend?.username}</span>
-                </div>
-              ))}
+                ))}
+              </div>
+              {user?._id !== userProfile._id &&
+                <div className="flex flex-col my-2 ">
+                  <h1>Mutual Friends</h1>
+                  {mutualFriends && mutualFriends.map((mutualfriend) => (
+                    <div
+                      className="hover:bg-gray-100 cursor-pointer  flex items-center justify-between gap-4 p-4"
+                      key={mutualfriend._id}
+                      onClick={() => navigate(`/profile/${mutualfriend._id}`)}
+                    >
+                      <div className="ml-10">
+                        <Avatar className="w-16 h-16 ">
+                          <AvatarImage
+                            className="w-full h-full object-cover"
+                            src={mutualfriend?.profilePicture}
+                            alt={mutualfriend?.username}
+                          />
+                          <AvatarFallback>
+                            {mutualfriend?.username.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                      </div>
+                      <span className="font-medium mr-6">
+                        {mutualfriend?.bio?.length > 50
+                          ? mutualfriend.bio.slice(0, 50) + "..."
+                          : mutualfriend?.bio}
+                      </span>
+                      <span className="font-medium mr-16">{mutualfriend?.username}</span>
+                    </div>
+                  ))}
+                </div>}
+
             </div>
           )}
+
+
         </div>
       </div>
       <EditProfile open={open} setOpen={setOpen} userProfile={userProfile} />
