@@ -135,7 +135,7 @@ const ChatPage = () => {
             : " md:w-1/4  bg-white shadow-lg p-5 md:m-5 m-1  w-full  overflow-hidden border border-gray-300 rounded-2xl md:block"
         }
       >
-        <div className="sticky -top-5 z-10 bg-white -mx-1 border-b">
+        <div className="sticky -top-5 z-10 bg-white -mx-1 ">
           <div className="flex justify-between gap-3 shadow-black items-center p-4 mb-4 -m-5 border-b bg-gray-200">
             <div className="flex items-center">
             <Avatar>
@@ -144,7 +144,7 @@ const ChatPage = () => {
             </Avatar>
               <span className="font-medium ml-4">{user?.username}</span>
             </div>
-           <div onClick={()=>{navigate('/')}}>
+           <div onClick={()=>{navigate('/')}} className="cursor-pointer">
            <MoveLeftIcon/>
            </div>
           </div>
@@ -162,9 +162,9 @@ const ChatPage = () => {
             />
           </div>
         </div>
-        <div className="overflow-y-auto w-[100%] h-[calc(640px-150px)] scrollbar-thin pr-2">
+        <div className="overflow-y-auto w-[100%] md:h-[65vh] h-[73vh] scrollbar-none border rounded-lg pr-2">
           {!inputTrigger ? (
-            <div className="mt-1">
+            <div className="my-1">
               {allUsers &&
                 allUsers.map((allUser) => {
                   const isOnline = onlineUsers.includes(allUser?._id);
@@ -239,7 +239,7 @@ const ChatPage = () => {
         {selectedUser ? (
           <section className="flex flex-col  w-full">
             <div className="flex gap-3  items-center p-4 border-b border-gray-300 bg-gray-200">
-              <button onClick={() => dispatch(setSelectedUser(null))}>
+              <button onClick={() => dispatch(setSelectedUser(null))} className="cursor-pointer">
                 back
               </button>
               <Avatar>

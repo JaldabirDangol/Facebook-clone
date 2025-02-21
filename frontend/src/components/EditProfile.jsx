@@ -4,10 +4,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import blankprofilepic from "../assets/blankprofilepic.png";
 import blankcoverpic from "../assets/blankcoverpic.png";
 import { Button } from "./ui/button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { backendurl } from "../../configurl";
 import { toast } from "sonner";
+import { setAuthUser, setUserProfile } from "../../store/authSlice";
 
 const EditProfile = ({ open, setOpen, userProfile }) => {
   const { user } = useSelector((store) => store.auth);
@@ -17,6 +18,7 @@ const EditProfile = ({ open, setOpen, userProfile }) => {
   const [newPassword, setNewPassword] = useState("");
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [coverPhoto, setCoverPhoto] = useState(null);
+  const dispatch = useDispatch()
 
   const [profilePreview, setProfilePreview] = useState(
     userProfile?.profilePicture || blankprofilepic
@@ -77,6 +79,8 @@ const EditProfile = ({ open, setOpen, userProfile }) => {
 
       if (res.data.success) {
         toast.success(res.data.message)
+        dispatch(setAuthUser(res.data.user))
+        dispatch(setUserProfile())
       }
     } catch (error) {
       console.error("Error updating profile:", error);

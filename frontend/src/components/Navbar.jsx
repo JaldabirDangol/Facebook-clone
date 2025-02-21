@@ -5,7 +5,7 @@ import { IoHomeOutline, IoNotifications } from "react-icons/io5";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { MdDelete } from "react-icons/md";
 import { Input } from "./ui/input";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { backendurl } from "../../configurl";
 import { toast } from "sonner";
@@ -303,7 +303,9 @@ export const Navbar = () => {
                                         <span className="ml-4">{user?.username}</span>
                                     </div>
                                     <hr className="border-b bg-black w-full my-2" />
-                                    <span onClick={() => navigate(`profile/${user._id}`)} className="text-blue-500 font-semibold">See all profiles</span>
+                                    <span  className="text-blue-500 font-semibold"><Link to={`/profile/${user?._id}`}>
+                                    See all profiles </Link>
+                                        </span>
 
                                     <div className="flex items-center gap-2 mt-2">
                                         <HelpCircle size={24} color="#422e2e" />

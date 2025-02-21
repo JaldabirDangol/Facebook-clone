@@ -31,7 +31,7 @@ const Profile = () => {
   const isLoggedInUserProfile = user?._id === userProfile?._id;
   const [displayTab, setDisplayTab] = useState([]);
   const [bio, SetBio] = useState("");
-  const [threeDot, setThreeDot] = useState(false);
+  const [activePost, setActivePost] = useState(null);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [isFriend, setIsFriend] = useState(
@@ -40,7 +40,6 @@ const Profile = () => {
 
   useEffect(() => {
     setDisplayTab(userProfile?.posts || []);
-  
   }, [userProfile]);
 
   const handleTabChange = (tab) => {
@@ -257,73 +256,70 @@ const Profile = () => {
             </div>
           )}
 
-          {activeTab === "saved" && (
-            <div className="flex flex-col">
-              {displayTab.map((post) => (
-                <div
-                  key={post._id}
-                  className="flex justify-between cursor-pointer relative border rounded-md bg-slate-50 mb-2 "
-                >
-                  <div className="flex items-center">
-                    <img
-                      src={post.image}
-                      alt="post"
-                      className="rounded-lg w-2/6 mt-5 ml-5 mb-4 object-cover"
-                    />
-                    <span className="ml-10">{post.caption}</span>
-                  </div>
-                  <MoreHorizontal
-                    onClick={() => {
-                      setThreeDot(!threeDot);
-                      dispatch(setSelectedPost(post));
-                    }}
-                    className="cursor-pointer mr-4  mt-8 "
-                  />
-                  {threeDot && (
-                    <div
-                      className="absolute flex flex-col right-2 items-center ml-4
-                                          top-14 bg-white shadow-md  w-2/3  border rounded-md z-20 gap-2 my-2 cursor-pointer"
-                    >
-                      <h2 className="mt-2">Post Options</h2>
-                      {post.author._id === user?._id && (
-                        <h2
-                          onClick={deletePostHandler}
-                          className="flex items-center mr-1"
-                        >
-                          <RiDeleteBin6Line className="mr-1" />
-                          Delete Post
-                        </h2>
-                      )}
-
-                      <h2
-                        className="mb-2 flex items-center "
-                        onClick={() => {
-                          navigate(`/profile/${post.author._id}`);
-                          setThreeDot(!threeDot);
-                          setActiveTab("posts");
-                        }}
-                      >
-                        <Avatar className="mr-2 h-4 w-4">
-                          <AvatarImage src={post.author.profilePicture} />
-                          <AvatarFallback>C</AvatarFallback>
-                        </Avatar>{" "}
-                        View Profile
-                      </h2>
-
-                   {
-                    user._id === userProfile._id && 
-                    <h2 className="mb-2 flex items-center" onClick={savedHandler}>
-                    <IoBookmarkOutline className="mr-1"/>
-                    Remove from saved
-                       </h2>
-                   }
-
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+{activeTab === "saved" && (
+  <div className="flex flex-col">
+    {displayTab.filter((post) => post.image) 
+       .map((post) => (
+      <div
+        key={post._id}
+        className="flex justify-between cursor-pointer relative border rounded-md bg-slate-50 mb-2"
+      >
+        <div className="flex items-center">
+          <img
+            src={post?.image}
+            alt="post"
+            className="rounded-lg w-2/6 mt-5 ml-5 mb-4 object-cover"
+          />
+          <span className="ml-10">{post?.caption}</span>
+        </div>
+        <MoreHorizontal
+          onClick={() => {
+            setActivePost(activePost === post._id ? null : post._id);
+            dispatch(setSelectedPost(post));
+          }}
+          className="cursor-pointer mr-4 mt-8"
+        />
+        {activePost === post._id && ( // Ensure only the clicked post's menu is open
+          <div
+            className="absolute flex flex-col right-2 items-center ml-4
+                        top-14 bg-white shadow-md w-2/3 border rounded-md z-20 gap-2 my-2 cursor-pointer"
+          >
+            <h2 className="mt-2">Post Options</h2>
+            {post.author._id === user?._id && (
+              <h2
+                onClick={deletePostHandler}
+                className="flex items-center mr-1"
+              >
+                <RiDeleteBin6Line className="mr-1" />
+                Delete Post
+              </h2>
+            )}
+            <h2
+              className="mb-2 flex items-center"
+              onClick={() => {
+                navigate(`/profile/${post.author._id}`);
+                setActivePost(null);
+                setActiveTab("posts");
+              }}
+            >
+              <Avatar className="mr-2 h-4 w-4">
+                <AvatarImage src={post.author.profilePicture} />
+                <AvatarFallback>C</AvatarFallback>
+              </Avatar>{" "}
+              View Profile
+            </h2>
+            {user._id === userProfile._id && (
+              <h2 className="mb-2 flex items-center" onClick={savedHandler}>
+                <IoBookmarkOutline className="mr-1" />
+                Remove from saved
+              </h2>
+            )}
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+)}
 
           {activeTab === "about" && (
             <div className="flex flex-col w-full border rounded-md  bg-gray-100 p-2">

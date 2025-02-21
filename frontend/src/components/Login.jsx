@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -7,13 +7,14 @@ import { Loader2 } from "lucide-react";
 import axios from 'axios';
 import { backendurl } from "../../configurl";
 import { toast } from "sonner";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "../../store/authSlice";
 
 
 const Login = () => {
   const navigate = useNavigate()
   const [loading,setLoading] = useState(false)
+  const {user} = useSelector(store => store.auth)
   const dispatch = useDispatch();
   const [inputInfo, setInputInfo] = useState({
     password: "",
@@ -49,6 +50,7 @@ const Login = () => {
       setLoading(false)
 
       }
+      
   };
  
   return (
