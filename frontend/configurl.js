@@ -1,1 +1,1 @@
-export const backendurl = 'http://localhost:8081'
+export const backendurl = 'https://facebook-clone-r73o.onrender.com'
