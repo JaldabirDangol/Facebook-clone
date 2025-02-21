@@ -14,7 +14,8 @@ import { setAuthUser } from "../../store/authSlice";
 const Login = () => {
   const navigate = useNavigate()
   const [loading,setLoading] = useState(false)
-  const {user} = useSelector(store => store.auth)
+  const { user } = useSelector(store => store.auth)
+  console.log(user)
   const dispatch = useDispatch();
   const [inputInfo, setInputInfo] = useState({
     password: "",
@@ -50,8 +51,13 @@ const Login = () => {
       setLoading(false)
 
       }
+    };
       
-  };
+      useEffect(()=>{
+        if(user){
+          navigate('/')
+        }
+      },[])
  
   return (
     <div className="w-full h-screen flex flex-col flex-cols items-center justify-start ">

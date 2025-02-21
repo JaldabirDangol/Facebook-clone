@@ -28,10 +28,9 @@ export const signup = async (req, res) => {
         success: false,
       });
     }
-    const bcryptPassword = await bcrypt.hash(password, 10); //hash
+    const bcryptPassword = await bcrypt.hash(password, 10); 
 
     await User.create({
-      // create
       username: username,
       password: bcryptPassword,
       email: email,
@@ -76,21 +75,22 @@ export const login = async (req, res) => {
         success: false,
       });
     }
-    const token = await jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
       expiresIn: "1d",
     });
 
-    return res
-      .cookie("logincookie", token, {
-        httpOnly: true,
-        sameSite: "strict",
-        maxAge: 1 * 24 * 60 * 60 * 1000,
-      })
-      .json({
-        message:`Welcome back ${user.username}`,
-        success: true,
-        user
-      });
+
+    return res.cookie('logincookie', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: 'none',
+      maxAge: 24 * 60 * 60 * 1000 // 1 day
+  }).json({
+      message: `${user.username} Logged in successfully`,
+      success: true,
+      user
+  })
+
   } catch (error) {
     console.log(error);
   }

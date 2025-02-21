@@ -17,19 +17,20 @@ import { setSocket } from '../store/socketSlice'
 import SuggestedUserList from './components/SuggestedUserList'
 import Saved from './components/Saved'
 import ChatPage from './components/ChatPage'
+import ProtectedRoutes from './components/ProtectedRoutes';
 const browserRouter = createBrowserRouter([
   {
     path: '/',
-    element: <MainLayout />,
+    element: <ProtectedRoutes><MainLayout /></ProtectedRoutes>,
     children: [
-      { path: '/suggesteduser', element:<SuggestedUserList/> },
-      { path: 'friends' , element:<Friends/>},
-      { path: '/', element: <Home /> },
-      { path: '/savedpost', element:<Saved/>}
+      { path: '/suggesteduser', element:<ProtectedRoutes><SuggestedUserList/></ProtectedRoutes> },
+      { path: 'friends' , element: <ProtectedRoutes><Friends/></ProtectedRoutes> },
+      { path: '/', element: <ProtectedRoutes> <Home /></ProtectedRoutes>  },
+      { path: '/savedpost', element: <ProtectedRoutes><Saved/></ProtectedRoutes> }
     ]
   },
-  { path : '/chat' ,element:<ChatPage/>},
-  { path: '/profile/:id', element: <UserProfile /> },
+  { path : '/chat' ,element: <ProtectedRoutes><ChatPage/></ProtectedRoutes> },
+  { path: '/profile/:id', element:  <ProtectedRoutes><UserProfile /></ProtectedRoutes>  },
   { path: '/login', element: <Login /> },
   { path: '/signup', element: <Signup /> }
 ])

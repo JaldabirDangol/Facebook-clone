@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -7,10 +7,12 @@ import { Loader2 } from "lucide-react";
 import axios from 'axios';
 import { backendurl } from "../../configurl";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
 
 
 const SignUp = () => {
   const navigate = useNavigate()
+  const {user} = useSelector(store => store.auth)
   const [loading,setLoading] = useState(false)
   const [inputInfo, setInputInfo] = useState({
     username: "",
@@ -48,9 +50,14 @@ const SignUp = () => {
         console.log(error)
       }finally{
       setLoading(false)
-
       }
-  };
+    };
+    
+      useEffect(()=>{
+        if(user){
+          navigate('/')
+        }
+      },[])
  
 
   return (
