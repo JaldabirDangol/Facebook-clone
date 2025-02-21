@@ -1,1 +1,1 @@
-export const backendurl = 'https://facebook-clone-r73o.onrender.com'
+export const backendurl = 'https://facebook-clone-iky3.onrender.com'
